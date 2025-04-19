@@ -1,4 +1,4 @@
-package com.example.androidprojectjava_foodplanner.remote;
+package com.example.androidprojectjava_foodplanner.remote.meal;
 
 import android.content.Context;
 

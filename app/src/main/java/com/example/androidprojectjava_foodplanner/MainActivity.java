@@ -5,18 +5,15 @@ import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidprojectjava_foodplanner.model.Category;
 import com.example.androidprojectjava_foodplanner.model.Country;
 import com.example.androidprojectjava_foodplanner.model.Meal;
-import com.example.androidprojectjava_foodplanner.remote.CategoriesNetworkCB;
-import com.example.androidprojectjava_foodplanner.remote.CountriesNetworkCB;
-import com.example.androidprojectjava_foodplanner.remote.MealListNetworkCB;
-import com.example.androidprojectjava_foodplanner.remote.MealNetworkCB;
-import com.example.androidprojectjava_foodplanner.remote.MealRemoteDataSource;
+import com.example.androidprojectjava_foodplanner.remote.meal.CategoriesNetworkCB;
+import com.example.androidprojectjava_foodplanner.remote.meal.CountriesNetworkCB;
+import com.example.androidprojectjava_foodplanner.remote.meal.MealListNetworkCB;
+import com.example.androidprojectjava_foodplanner.remote.meal.MealNetworkCB;
+import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
 
 import java.util.List;
 

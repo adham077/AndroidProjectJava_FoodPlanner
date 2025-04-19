@@ -1,4 +1,4 @@
-package com.example.androidprojectjava_foodplanner.remote;
+package com.example.androidprojectjava_foodplanner.remote.meal;
 
 import com.example.androidprojectjava_foodplanner.model.Country;
 import com.google.gson.annotations.SerializedName;
