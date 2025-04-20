@@ -1,11 +1,14 @@
 package com.example.androidprojectjava_foodplanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.androidprojectjava_foodplanner.AppNavigationView.navigationActivity.view.NavigationActivity;
+import com.example.androidprojectjava_foodplanner.login.view.LoginActivity;
 import com.example.androidprojectjava_foodplanner.model.Category;
 import com.example.androidprojectjava_foodplanner.model.Country;
 import com.example.androidprojectjava_foodplanner.model.Meal;
@@ -24,7 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        networkTest();
+        Intent intent  = new Intent(MainActivity.this, NavigationActivity.class);
+        startActivity(intent);
+        //networkTest();
     }
 
     public void networkTest(){

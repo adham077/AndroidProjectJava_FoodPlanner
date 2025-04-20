@@ -1,10 +1,12 @@
 package com.example.androidprojectjava_foodplanner.remote.meal;
 
 import com.example.androidprojectjava_foodplanner.model.Meal;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class MealNetworkWrapper {
+    @SerializedName("meals")
     private List<Meal> meals;
 
     public List<Meal> getMeals() {
