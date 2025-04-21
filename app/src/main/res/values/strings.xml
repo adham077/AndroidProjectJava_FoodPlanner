@@ -2,4 +2,7 @@
     <string name="app_name">AndroidProjectJava_FoodPlanner</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_in_key">Login</string>
+    <string name="create_account_key">Create Account</string>
+    <string name="continue_with_google_key">Continue With Google</string>
 </resources>

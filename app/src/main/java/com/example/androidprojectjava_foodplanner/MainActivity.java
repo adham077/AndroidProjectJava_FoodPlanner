@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        Intent intent  = new Intent(MainActivity.this, NavigationActivity.class);
+        Intent intent  = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
         //networkTest();
     }
