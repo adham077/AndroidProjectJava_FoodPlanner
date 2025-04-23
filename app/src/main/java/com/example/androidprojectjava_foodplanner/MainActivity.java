@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         /*myUser = new PlannerUser();
-        UserAuthentication.getInstance().signUp("adham.walaa@gmail.com", "Aragorn_21", "Adham Walaa", new OnSignupCallBack() {
+        UserAuthentication.getInstance().signUp("adham.walaa@gmail.com", "123", "Adham Walaa", new OnSignupCallBack() {
             @Override
             public void onSuccess(FirebaseUser user) {
                 firebaseUser = UserAuthentication.getInstance().getCurrentUser();
