@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidprojectjava_foodplanner.R;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -17,6 +18,8 @@ public class NavigationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_navigation);
+
+        GoogleSignInOptions googleSignInOptions;
 
     }
 }

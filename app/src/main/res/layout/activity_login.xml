@@ -8,14 +8,6 @@
     tools:context=".login.view.LoginActivity" >
 
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintStart_toEndOf="@+id/emailTextInputLayout"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/login_pattern" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailTextInputLayout"
         android:layout_width="match_parent"

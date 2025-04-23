@@ -1,6 +1,6 @@
 package com.example.androidprojectjava_foodplanner.remote.meal;
 
-import com.example.androidprojectjava_foodplanner.model.Category;
+import com.example.androidprojectjava_foodplanner.model.pojo.Category;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.androidprojectjava_foodplanner.remote.firebase.firebaseAuth;
+package com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
 

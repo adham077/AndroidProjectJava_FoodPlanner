@@ -1,6 +1,6 @@
 package com.example.androidprojectjava_foodplanner.remote.meal;
 
-import com.example.androidprojectjava_foodplanner.model.Country;
+import com.example.androidprojectjava_foodplanner.model.pojo.Country;
 
 import java.util.List;
 

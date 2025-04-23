@@ -1,105 +1,104 @@
-package com.example.androidprojectjava_foodplanner.model;
+package com.example.androidprojectjava_foodplanner.model.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class Meal {
     @SerializedName("idMeal")
-    private int id;
+    protected int id;
     @SerializedName("strMeal")
-    private String name;
+    protected String name;
     @SerializedName("strMealThumb")
-    private String imageUrl;
+    protected String imageUrl;
     @SerializedName("strArea")
-    private String country;
+    protected String country;
     @SerializedName("strIngredient1")
-    private String ingredient1;
+    protected String ingredient1;
     @SerializedName("strIngredient2")
-    private String ingredient2;
+    protected String ingredient2;
     @SerializedName("strIngredient3")
-    private String ingredient3;
+    protected String ingredient3;
     @SerializedName("strIngredient4")
-    private String ingredient4;
+    protected String ingredient4;
     @SerializedName("strIngredient5")
-    private String ingredient5;
+    protected String ingredient5;
     @SerializedName("strIngredient6")
-    private String ingredient6;
+    protected String ingredient6;
     @SerializedName("strIngredient7")
-    private String ingredient7;
+    protected String ingredient7;
     @SerializedName("strIngredient8")
-    private String ingredient8;
+    protected String ingredient8;
     @SerializedName("strIngredient9")
-    private String ingredient9;
+    protected String ingredient9;
     @SerializedName("strIngredient10")
-    private String ingredient10;
+    protected String ingredient10;
     @SerializedName("strIngredient11")
-    private String ingredient11;
+    protected String ingredient11;
     @SerializedName("strIngredient12")
-    private String ingredient12;
+    protected String ingredient12;
     @SerializedName("strIngredient13")
-    private String ingredient13;
+    protected String ingredient13;
     @SerializedName("strIngredient14")
-    private String ingredient14;
+    protected String ingredient14;
     @SerializedName("strIngredient15")
-    private String ingredient15;
+    protected String ingredient15;
     @SerializedName("strIngredient16")
-    private String ingredient16;
+    protected String ingredient16;
     @SerializedName("strIngredient17")
-    private String ingredient17;
+    protected String ingredient17;
     @SerializedName("strIngredient18")
-    private String ingredient18;
+    protected String ingredient18;
     @SerializedName("strIngredient19")
-    private String ingredient19;
+    protected String ingredient19;
     @SerializedName("strIngredient20")
-    private String ingredient20;
+    protected String ingredient20;
     @SerializedName("strMeasure1")
-    private String measurement1;
+    protected String measurement1;
     @SerializedName("strMeasure2")
-    private String measurement2;
+    protected String measurement2;
     @SerializedName("strMeasure3")
-    private String measurement3;
+    protected String measurement3;
     @SerializedName("strMeasure4")
-    private String measurement4;
+    protected String measurement4;
     @SerializedName("strMeasure5")
-    private String measurement5;
+    protected String measurement5;
     @SerializedName("strMeasure6")
-    private String measurement6;
+    protected String measurement6;
     @SerializedName("strMeasure7")
-    private String measurement7;
+    protected String measurement7;
     @SerializedName("strMeasure8")
-    private String measurement8;
+    protected String measurement8;
     @SerializedName("strMeasure9")
-    private String measurement9;
+    protected String measurement9;
     @SerializedName("strMeasure10")
-    private String measurement10;
+    protected String measurement10;
     @SerializedName("strMeasure11")
-    private String measurement11;
+    protected String measurement11;
     @SerializedName("strMeasure12")
-    private String measurement12;
+    protected String measurement12;
     @SerializedName("strMeasure13")
-    private String measurement13;
+    protected String measurement13;
     @SerializedName("strMeasure14")
-    private String measurement14;
+    protected String measurement14;
     @SerializedName("strMeasure15")
-    private String measurement15;
+    protected String measurement15;
     @SerializedName("strMeasure16")
-    private String measurement16;
+    protected String measurement16;
     @SerializedName("strMeasure17")
-    private String measurement17;
+    protected String measurement17;
     @SerializedName("strMeasure18")
-    private String measurement18;
+    protected String measurement18;
     @SerializedName("strMeasure19")
-    private String measurement19;
+    protected String measurement19;
     @SerializedName("strMeasure20")
-    private String measurement20;
+    protected String measurement20;
     @SerializedName("strInstructions")
-    private String instructions;
+    protected String instructions;
     @SerializedName("strYoutube")
-    private String videoUrl;
+    protected String videoUrl;
 
-    private transient boolean isFavourited;
+    protected transient boolean isFavourited;
 
     public int getId() {
         return id;
