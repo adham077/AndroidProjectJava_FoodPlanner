@@ -6,7 +6,10 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
 import com.example.androidprojectjava_foodplanner.model.pojo.FavouriteMeal;
+import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannedMeal;
+import com.example.androidprojectjava_foodplanner.model.repository.FavouriteMealsDBCallBack;
+import com.example.androidprojectjava_foodplanner.model.repository.PlannedMealsDBCallBack;
 
 import java.util.List;
 
@@ -61,10 +64,6 @@ public class MealLocalDataSource {
         }).start();
     }
 
-    public LiveData<List<FavouriteMeal>> getAllFavouriteMeals(){
-        return favouriteMealDao.getAllFavouriteMeals();
-    }
-
     public void insertPlannedMeal(PlannedMeal plannedMeal,@Nullable OperationState operationState){
         new Thread(new Runnable() {
             @Override
@@ -95,26 +94,24 @@ public class MealLocalDataSource {
         }).start();
     }
 
-    public LiveData<List<PlannedMeal>> getAllPlannedMeals(){
-        return plannedMealDao.getAllPlannedMeals();
-    }
 
-    public void deleteAllPlannedMeals(){
+    public void deleteAllPlannedMeals(@Nullable OperationState operationState){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 plannedMealDao.deleteAllPlannedMeals();
+                if(operationState != null)operationState.onSuccess();
             }
         }).start();
 
     }
 
-    public void deleteAllFavouriteMeals(){
+    public void deleteAllFavouriteMeals(@Nullable OperationState operationState){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 favouriteMealDao.deleteAllFavouriteMeals();
-                Log.i("LocalDataBaseFav","sucessDeletion");
+                if(operationState != null)operationState.onSuccess();
             }
         }).start();
     }
@@ -169,12 +166,95 @@ public class MealLocalDataSource {
         }).start();
     }
 
-    public void deletePlannedMealByDate(int day,int month,int year){
+    public void deletePlannedMealByDate(int day,int month,int year,@Nullable OperationState operationState){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 plannedMealDao.deletePlannedMealByDate(day,month,year);
+                if(operationState != null)operationState.onSuccess();
             }
         }).start();
     }
+
+    public void  getAllPlannedMeals(PlannedMealsDBCallBack callBack){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<PlannedMeal> meals = plannedMealDao.getAllPlannedMeals();
+                callBack.onTaskCompleted(meals);
+            }
+        }).start();
+    }
+
+    public void getAllFavouriteMeals(FavouriteMealsDBCallBack callBack){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<FavouriteMeal> meals = favouriteMealDao.getAllFavouriteMeals();
+                callBack.onTaskCompleted(meals);
+            }
+        }).start();
+    }
+
+    public void deleteAllLocalMeals(@Nullable OperationState operationState){
+        final boolean[] deletedArr = {false,false};
+        deleteAllFavouriteMeals(new OperationState() {
+            @Override
+            public void onSuccess() {
+                deletedArr[0] = true;
+                if(operationState!=null)operationState.onSuccess();
+            }
+
+            @Override
+            public void onFailure() {
+                if(operationState!=null)operationState.onFailure();
+            }
+        });
+
+        deleteAllPlannedMeals(new OperationState() {
+            @Override
+            public void onSuccess() {
+                deletedArr[1] = true;
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(deletedArr[0] && deletedArr[1]){
+                    if(operationState!=null)operationState.onSuccess();
+                }
+            }
+        }).start();
+    }
+
+    public void insertPlannedMeals(List<PlannedMeal> meals,@Nullable OperationState operationState){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(PlannedMeal meal : meals){
+                    plannedMealDao.insertPlannedMeal(meal);
+                }
+                if(operationState != null)operationState.onSuccess();
+            }
+        }).start();
+    }
+
+    public void insertFavouriteMeals(List<FavouriteMeal> meals,@Nullable OperationState operationState){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(FavouriteMeal meal : meals){
+                    favouriteMealDao.insertFavouriteMeal(meal);
+                }
+                if(operationState != null)operationState.onSuccess();
+            }
+        }).start();
+    }
+
 }

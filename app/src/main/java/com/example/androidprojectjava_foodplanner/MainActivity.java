@@ -14,15 +14,22 @@ import com.example.androidprojectjava_foodplanner.model.pojo.FavouriteMeal;
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannedMeal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannerUser;
+import com.example.androidprojectjava_foodplanner.model.repository.FavouriteMealsDBCallBack;
+import com.example.androidprojectjava_foodplanner.model.repository.MealRepository;
+import com.example.androidprojectjava_foodplanner.model.repository.SyncingCallBacks;
+import com.example.androidprojectjava_foodplanner.model.repository.UserRepository;
 import com.example.androidprojectjava_foodplanner.remote.meal.CategoriesNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.CountriesNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealListNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
+import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.OnLoginCallBack;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.OnSignupCallBack;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.UserAuthentication;
+import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.AddUserCB;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.UserRemoteDataSource;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.List;
 
@@ -35,24 +42,79 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        /*myUser = new PlannerUser();
-        UserAuthentication.getInstance().signUp("adham.walaa@gmail.com", "123", "Adham Walaa", new OnSignupCallBack() {
+
+        /*MealRemoteDataSource mealRemoteDataSource =  MealRemoteDataSource.getInstance(this.getApplicationContext());
+        MealLocalDataSource mealLocalDataSource = MealLocalDataSource.getInstance(this.getApplicationContext());
+        MealRepository mealRepository = MealRepository.getInstance(mealRemoteDataSource,mealLocalDataSource);
+        String userId = UserAuthentication.getInstance().getCurrentUser().getUid();
+        UserRemoteDataSource.getInstance(this).removePlannedMealByDate(userId,"1:1:2025",null);*/
+
+        /*mealRepository.getMealByIdRemote(52772, new MealNetworkCB() {
             @Override
-            public void onSuccess(FirebaseUser user) {
-                firebaseUser = UserAuthentication.getInstance().getCurrentUser();
-                fireStoreTest();
+            public void onSuccess(Meal meal) {
+                FavouriteMeal favouriteMeal = new FavouriteMeal(meal);
+                UserRemoteDataSource.getInstance(this).addUserFavouriteMeal(favouriteMeal,userId,null);
             }
 
             @Override
-            public void onFailure(int errorID) {
+            public void onFailure(String msg) {
 
             }
         });*/
 
-        //Intent intent  = new Intent(MainActivity.this, LoginActivity.class);
-        //startActivity(intent);
+        /*mealRepository.getMealByIdRemote(52772, new MealNetworkCB() {
+            @Override
+            public void onSuccess(Meal meal) {
+                PlannedMeal plannedMeal = new PlannedMeal(meal,1,1,2025);
+                UserRemoteDataSource.getInstance(this).addUserPlannedMeal(plannedMeal,userId,null);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+
+            }
+        });*/
+
+        /*String userId = UserAuthentication.getInstance().getCurrentUser().getUid();
+        UserRemoteDataSource.getInstance(this).removePlannedMeal(userId, 52772, new AddUserCB() {
+            @Override
+            public void onSuccess() {
+                Log.i("removePlannedMeal","success");
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });*/
+
+
+        /*String userId = UserAuthentication.getInstance().getCurrentUser().getUid();
+        UserRemoteDataSource.getInstance(this).removeFavouriteMeal(userId, 52772, new AddUserCB() {
+            @Override
+            public void onSuccess() {
+                Log.i("removeFavouriteMeal","success");
+            }
+
+            @Override
+            public void onFailure() {
+                Log.i("removeFavouriteMeal","Failure");
+            }
+        });*/
+
+        /*UserAuthentication.getInstance().login("adham.walaa@gmail.com", "1234567", new OnLoginCallBack() {
+            @Override
+            public void onSuccess(FirebaseUser user) {
+            }
+
+            @Override
+            public void onFailure(int errorID) {
+                Log.i("failureLogin","failure: " + errorID);
+            }
+        });*/
+        //Log.i("UserUid",UserAuthentication.getInstance().getCurrentUser().getUid());
         //dataBaseTest();
-        //networkTest();
+        //dataLayerTest();
     }
 
     public void networkTest(){
@@ -203,14 +265,32 @@ public class MainActivity extends AppCompatActivity {
         myUser.setId(firebaseUser.getUid());
         myUser.setName(firebaseUser.getDisplayName());
         myUser.setEmail(firebaseUser.getEmail());
-        mealLocalDataSource.getAllFavouriteMeals().observe(this, new Observer<List<FavouriteMeal>>() {
-            @Override
-            public void onChanged(List<FavouriteMeal> favouriteMeals) {
-                myUser.setFavouriteMeals(favouriteMeals);
-                userRemoteDataSource.addOrChangeUserDataById(myUser,null);
-            }
-        });
 
     }
 
+    public void dataLayerTest(){
+        MealLocalDataSource mealLocalDataSource = MealLocalDataSource.getInstance(this.getApplicationContext());
+        MealRemoteDataSource mealRemoteDataSource = MealRemoteDataSource.getInstance(this.getApplicationContext());
+        UserAuthentication userAuthentication = UserAuthentication.getInstance();
+        UserRemoteDataSource userRemoteDataSource = UserRemoteDataSource.getInstance(this.getApplicationContext());
+
+        UserRepository userRepository = UserRepository.getInstance(mealLocalDataSource,userAuthentication,userRemoteDataSource);
+
+        userRepository.syncRemoteToLocal(new SyncingCallBacks() {
+            @Override
+            public void taskCompleted(int status) {
+                Log.i("syncRemoteToLocal","Status= " + status);
+            }
+        });
+
+        userRepository.syncLocalToRemote(new SyncingCallBacks() {
+            @Override
+            public void taskCompleted(int status) {
+                Log.i("syncLocalToRemote","Status= " + status);
+            }
+        });
+
+
+
+    }
 }

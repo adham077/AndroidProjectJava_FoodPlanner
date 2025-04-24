@@ -13,7 +13,7 @@ import java.util.List;
 @Dao
 public interface PlannedMealDao {
     @Query("SELECT * FROM PlannedMealsTable")
-    LiveData<List<PlannedMeal>> getAllPlannedMeals();
+    List<PlannedMeal> getAllPlannedMeals();
     @Insert
     void insertPlannedMeal(PlannedMeal plannedMeal);
     @Delete

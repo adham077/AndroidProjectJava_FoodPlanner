@@ -18,6 +18,11 @@ public class PlannedMeal{
     @PrimaryKey
     @NonNull
     private String date;
+
+    public PlannedMeal(){
+
+    }
+
     public PlannedMeal(Meal meal,int day,int month,int year){
         this.meal = meal;
         this.day = day;
