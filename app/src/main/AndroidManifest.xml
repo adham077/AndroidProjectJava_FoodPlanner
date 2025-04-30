@@ -16,10 +16,13 @@
         android:theme="@style/Theme.AndroidProjectJava_FoodPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".account.create.view.CreateAccount"
+            android:exported="false" />
+        <activity
             android:name=".AppNavigationView.navigationActivity.view.NavigationActivity"
             android:exported="false" />
         <activity
-            android:name=".login.view.LoginActivity"
+            android:name=".account.login.view.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

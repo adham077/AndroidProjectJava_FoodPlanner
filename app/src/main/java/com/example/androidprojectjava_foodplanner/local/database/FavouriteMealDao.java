@@ -9,7 +9,6 @@ import androidx.room.Query;
 import com.example.androidprojectjava_foodplanner.model.pojo.FavouriteMeal;
 
 import java.util.List;
-
 @Dao
 public interface FavouriteMealDao {
     @Query("SELECT * FROM FavouriteMealsTable")

@@ -7,6 +7,7 @@ import java.util.List;
 public class Meal {
     @SerializedName("idMeal")
     protected int id;
+
     @SerializedName("strMeal")
     protected String name;
     @SerializedName("strMealThumb")

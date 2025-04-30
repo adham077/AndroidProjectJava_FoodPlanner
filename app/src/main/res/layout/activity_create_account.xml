@@ -5,14 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".account.login.view.LoginActivity" >
+    tools:context=".account.create.view.CreateAccount">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailTextInputLayout"
+        android:id="@+id/CreatemailTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="40dp"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="32dp"
+
         android:background="@drawable/login_text_shape"
         android:hint="Email Adress"
         android:textColorHint="#D3D3D3"
@@ -22,10 +23,10 @@
         app:errorTextColor="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/CreateNameTextInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/LoginActivityEmailEditText"
+            android:id="@+id/CreateActivityEmailEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/login_text_shape"
@@ -40,23 +41,23 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordTextInputLayout"
+        android:id="@+id/CreatepasswordTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="32dp"
         android:hint="Password"
         android:textColorHint="#D3D3D3"
-        app:errorTextColor="@color/red"
         app:boxBackgroundMode="outline"
         app:boxStrokeErrorColor="@color/red"
         app:endIconMode="custom"
+        app:errorTextColor="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emailTextInputLayout">
+        app:layout_constraintTop_toBottomOf="@id/CreatemailTextInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/LoginActivityPasswordTextView"
+            android:id="@+id/CreateActivityPasswordTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/login_text_shape"
@@ -68,68 +69,53 @@
             android:textColorLink="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginActivitySignInButton"
-        android:layout_width="290dp"
-        android:layout_height="39dp"
-        android:layout_marginHorizontal="80dp"
-        android:layout_marginTop="80dp"
-        android:background="@drawable/sign_in_button_shape"
-        android:text="@string/log_in_key"
-
-        android:textColorLink="@color/black"
-        app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextInputLayout" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginActivityCreateAccountButton"
-        android:layout_width="294dp"
-        android:layout_height="39dp"
-        android:layout_marginHorizontal="80dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/sign_in_button_shape"
-        android:text="@string/create_account_key"
-
-        android:textColorLink="@color/black"
-        app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginActivitySignInButton" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginActivityContinueWithGoogleButton"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/CreateNameTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="80dp"
-        android:layout_marginTop="44dp"
-        android:background="@drawable/continue_with_google_shape"
-
-        android:drawableLeft="@drawable/google_icon_asset"
-        android:text="@string/continue_with_google_key"
-
-        android:textColor="#000000"
-        app:backgroundTint="@null"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="216dp"
+        android:hint="Name"
+        android:textColorHint="#D3D3D3"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeErrorColor="@color/red"
+        app:endIconMode="custom"
+        app:errorTextColor="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginActivityCreateAccountButton" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/continueAsaGuestTextView"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/CreateActivityNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/login_text_shape"
+            android:drawableStart="@drawable/account_asset"
+            android:drawablePadding="14dp"
+            android:gravity="center_vertical"
+            android:inputType="textPersonName"
+            android:paddingStart="14dp"
+            android:textColorLink="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/CreateActivityCreateAccountButton"
         android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="30dp"
-        android:gravity="center"
-        android:textAppearance="?attr/textAppearanceBody2"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextInputLayout"
-        app:lineHeight="24sp" />
+        android:layout_height="39dp"
+        android:layout_marginHorizontal="80dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
 
+        android:layout_marginBottom="124dp"
+        android:background="@drawable/sign_in_button_shape"
+        android:text="@string/create_account_key"
+        android:textColorLink="@color/black"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

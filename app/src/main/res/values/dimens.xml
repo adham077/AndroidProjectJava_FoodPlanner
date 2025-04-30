@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="nav_bar_horizontal_margin">16dp</dimen>
+    <dimen name="nav_bar_vertical_margin">8dp</dimen>
+    <dimen name="nav_bar_max_width">560dp</dimen>
+    <dimen name="nav_bar_height">72dp</dimen>
+</resources>

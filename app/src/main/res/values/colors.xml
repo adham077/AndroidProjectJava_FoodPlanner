@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>>
     <color name="red_login_screen">#D61355</color>
+    <color name="colorPrimary">#F51A0D</color>
 </resources>

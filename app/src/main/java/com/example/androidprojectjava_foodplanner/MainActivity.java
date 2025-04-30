@@ -1,21 +1,20 @@
 package com.example.androidprojectjava_foodplanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 
 import com.example.androidprojectjava_foodplanner.local.database.MealLocalDataSource;
+import com.example.androidprojectjava_foodplanner.account.login.view.LoginActivity;
 import com.example.androidprojectjava_foodplanner.model.pojo.Category;
 import com.example.androidprojectjava_foodplanner.model.pojo.Country;
 import com.example.androidprojectjava_foodplanner.model.pojo.FavouriteMeal;
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannedMeal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannerUser;
-import com.example.androidprojectjava_foodplanner.model.repository.FavouriteMealsDBCallBack;
-import com.example.androidprojectjava_foodplanner.model.repository.MealRepository;
 import com.example.androidprojectjava_foodplanner.model.repository.SyncingCallBacks;
 import com.example.androidprojectjava_foodplanner.model.repository.UserRepository;
 import com.example.androidprojectjava_foodplanner.remote.meal.CategoriesNetworkCB;
@@ -23,13 +22,9 @@ import com.example.androidprojectjava_foodplanner.remote.meal.CountriesNetworkCB
 import com.example.androidprojectjava_foodplanner.remote.meal.MealListNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
-import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.OnLoginCallBack;
-import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.OnSignupCallBack;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.UserAuthentication;
-import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.AddUserCB;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.UserRemoteDataSource;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.List;
 
@@ -42,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
 
         /*MealRemoteDataSource mealRemoteDataSource =  MealRemoteDataSource.getInstance(this.getApplicationContext());
         MealLocalDataSource mealLocalDataSource = MealLocalDataSource.getInstance(this.getApplicationContext());
