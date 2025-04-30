@@ -163,7 +163,7 @@ public class UserRemoteDataSource {
         });
     }
 
-    public void removePlannedMeal(@NonNull String userId,@NonNull int mealID,@Nullable AddUserCB callBack){
+    public void removePlannedMeal(@NonNull String userId,@NonNull PlannedMeal myPlannedMeal,@Nullable AddUserCB callBack){
         DocumentReference documentReference = firebaseFirestoreDB.collection(COLLECTION_NAME).document(userId);
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -176,8 +176,8 @@ public class UserRemoteDataSource {
                             List<Map<String,Object>> updatedMeals = new ArrayList<>();
                             for(Map<String, Object> plannedMeal : plannedMeals){
                                 Map<String,Object> meal = (Map<String, Object>) plannedMeal.get("meal");
-                                Number listMealId = (Number) meal.get("id");
-                                if(listMealId != null && listMealId.intValue() != mealID) {
+                                String date = (String) plannedMeal.get("date");
+                                if(date != null && !date.equals(myPlannedMeal.getDate())){
                                     updatedMeals.add(plannedMeal);
                                 }
                             }

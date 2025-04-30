@@ -7,6 +7,7 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -19,7 +20,14 @@ import com.example.androidprojectjava_foodplanner.R;
 import com.example.androidprojectjava_foodplanner.account.create.view.CreateAccount;
 import com.example.androidprojectjava_foodplanner.local.database.MealLocalDataSource;
 import com.example.androidprojectjava_foodplanner.account.login.presenter.LoginPresenter;
+import com.example.androidprojectjava_foodplanner.model.pojo.FavouriteMeal;
+import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
+import com.example.androidprojectjava_foodplanner.model.pojo.PlannedMeal;
+import com.example.androidprojectjava_foodplanner.model.repository.OperationCB;
+import com.example.androidprojectjava_foodplanner.model.repository.SyncingCallBacks;
 import com.example.androidprojectjava_foodplanner.model.repository.UserRepository;
+import com.example.androidprojectjava_foodplanner.remote.meal.MealNetworkCB;
+import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.UserAuthentication;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.UserRemoteDataSource;
 import com.google.android.material.button.MaterialButton;
@@ -43,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewContrac
         );
 
         presenter = LoginPresenter.getInstance(this,userRepository);
+
 
         continueAsGuestHandler();
         loginHandler();
@@ -126,10 +135,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewContrac
             }
         });
     }
-
     public void continueWithGoogleHandler(){}
-
-
     @Override
     public void LoginStateActions(LoginPresenter.LoginState stateID) {
         TextInputLayout emailInputLayout = findViewById(R.id.emailTextInputLayout);
@@ -160,7 +166,6 @@ public class LoginActivity extends AppCompatActivity implements LoginViewContrac
                 passwordInputLayout.setError("Authentication failed");
                 break;
         }
-
     }
 
     @Override

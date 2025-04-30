@@ -54,7 +54,7 @@ public class MealLocalDataSource {
             @Override
             public void run() {
                 if (favouriteMealDao.getFavouriteMealByMealID(favouriteMeal.getId()) != null) {
-                    favouriteMealDao.deleteFavouriteMeal(favouriteMeal);
+                    favouriteMealDao.deleteFavouriteMealByMealID(favouriteMeal.getId());
                     if(operationState != null)operationState.onSuccess();
                 }
                 else{
@@ -84,7 +84,7 @@ public class MealLocalDataSource {
             @Override
             public void run() {
                 if(plannedMealDao.getPlannedMealByDate(plannedMeal.getDate()) != null){
-                    plannedMealDao.insertPlannedMeal(plannedMeal);
+                    plannedMealDao.deletePlannedMeal(plannedMeal);
                     if(operationState != null)operationState.onSuccess();
                 }
                 else{
@@ -170,8 +170,13 @@ public class MealLocalDataSource {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                plannedMealDao.deletePlannedMealByDate(day,month,year);
-                if(operationState != null)operationState.onSuccess();
+                if(plannedMealDao.getPlannedMealByDate(PlannedMeal.getFormattedDate(day,month,year)) != null){
+                    plannedMealDao.deletePlannedMealByDate(day,month,year);
+                    if(operationState != null)operationState.onSuccess();
+                }
+                else{
+                    if(operationState != null)operationState.onFailure();
+                }
             }
         }).start();
     }

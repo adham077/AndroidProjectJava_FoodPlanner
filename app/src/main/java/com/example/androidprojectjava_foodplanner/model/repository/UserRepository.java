@@ -3,6 +3,7 @@ package com.example.androidprojectjava_foodplanner.model.repository;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.credentials.exceptions.domerrors.NetworkError;
 
 import com.example.androidprojectjava_foodplanner.local.database.MealLocalDataSource;
 import com.example.androidprojectjava_foodplanner.local.database.OperationState;
@@ -57,16 +58,95 @@ public class UserRepository{
         return firebaseAuth.getCurrentUser() != null;
     }
 
-    public void signup(String email, String password,String name,OnSignupCallBack CB){
-        firebaseAuth.signUp(email,password,name,CB);
+    public void signup(String email, String password,String name,OperationCB CB){
+
+        AddUserCB addUserCB = new AddUserCB() {
+            @Override
+            public void onSuccess() {
+                syncRemoteToLocal(null);
+                CB.onSuccess();
+            }
+
+            @Override
+            public void onFailure() {
+                CB.onFailure(OperationCB.NETWORK_ERROR);
+            }
+        };
+
+        OperationState operationState = new OperationState() {
+            @Override
+            public void onSuccess() {
+                if(firebaseAuth.getCurrentUser() != null) {
+                    PlannerUser plannerUser = new PlannerUser();
+                    plannerUser.setEmail(email);
+                    plannerUser.setName(name);
+                    plannerUser.setId(firebaseAuth.getCurrentUser().getUid());
+                    firebaseDB.addOrChangeUserDataById(plannerUser, addUserCB);
+                }
+                else{
+                    CB.onFailure(OperationCB.NETWORK_ERROR);
+                }
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        };
+
+        firebaseAuth.signUp(email, password, name, new OnSignupCallBack() {
+            @Override
+            public void onSuccess(FirebaseUser user) {
+                mealLocalDataSource.deleteAllLocalMeals(operationState);
+            }
+
+            @Override
+            public void onFailure(int errorID) {
+                CB.onFailure(errorID);
+            }
+        });
     }
 
-    public void login(String email, String password, OnLoginCallBack CB){
-        firebaseAuth.login(email,password,CB);
+    public void login(String email, String password, OperationCB CB){
+        OperationState operationState = new OperationState() {
+            @Override
+            public void onSuccess() {
+                syncLocalToRemote(new SyncingCallBacks() {
+                    @Override
+                    public void taskCompleted(int status) {
+                        if(status == SUCCESS){
+                            CB.onSuccess();
+                        }
+                        else{
+                            CB.onFailure(OperationCB.NETWORK_ERROR);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        };
+
+
+        firebaseAuth.login(email, password, new OnLoginCallBack() {
+            @Override
+            public void onSuccess(FirebaseUser user) {
+                mealLocalDataSource.deleteAllLocalMeals(operationState);
+            }
+
+            @Override
+            public void onFailure(int errorID) {
+                CB.onFailure(errorID);
+            }
+        });
     }
 
     public void logout(){
         firebaseAuth.logOut();
+        mealRepository.deleteAllLocalMeals(null);
     }
 
     public void deleteCurrentUser(OnDeletionCallBack callBack){
@@ -221,25 +301,148 @@ public class UserRepository{
         }
     }
 
-    public void addPlannedMealToRemote(PlannedMeal plannedMeal,AddUserCB callBack){
-        firebaseDB.addUserPlannedMeal(plannedMeal,firebaseUser.getUid(),callBack);
+    public void addFavouriteMeal(FavouriteMeal meal,OperationCB operationState){
+        if(firebaseAuth.getCurrentUser() == null){
+            operationState.onFailure(OperationCB.USER_NOT_LOGGED_IN);
+            return;
+        }
+        mealLocalDataSource.insertFavouriteMeal(meal, new OperationState() {
+            @Override
+            public void onSuccess() {
+                firebaseDB.addUserFavouriteMeal(meal, firebaseAuth.getCurrentUser().getUid(), new AddUserCB() {
+                    @Override
+                    public void onSuccess() {
+                        operationState.onSuccess();
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        mealLocalDataSource.deleteFavouriteMeal(meal,null);
+                        operationState.onFailure(OperationCB.NETWORK_ERROR);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure() {
+                operationState.onFailure(OperationCB.DUPLICTE_FAVOURITE_MEAL);
+            }
+        });
     }
 
-    public void addFavouriteMealToRemote(FavouriteMeal favouriteMeal,AddUserCB callBack){
-        firebaseDB.addUserFavouriteMeal(favouriteMeal,firebaseUser.getUid(),callBack);
+    public void removeFavouriteMeal(FavouriteMeal meal,OperationCB operationState){
+        if(firebaseAuth.getCurrentUser() == null){
+            operationState.onFailure(OperationCB.USER_NOT_LOGGED_IN);
+            return;
+        }
+
+        firebaseDB.removeFavouriteMeal(firebaseAuth.getCurrentUser().getUid(), meal.getId(), new AddUserCB() {
+            @Override
+            public void onSuccess() {
+                mealLocalDataSource.deleteFavouriteMeal(meal, new OperationState() {
+                    @Override
+                    public void onSuccess() {
+                        operationState.onSuccess();
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        operationState.onSuccess();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure() {
+                operationState.onFailure(OperationCB.NETWORK_ERROR);
+            }
+        });
     }
 
-    public void removeFavouriteMealFromRemote(int mealID,AddUserCB callBack){
-        firebaseDB.removeFavouriteMeal(firebaseUser.getUid(),mealID,callBack);
+    public void addPlannedMeal(PlannedMeal meal, OperationCB operationState){
+        if(firebaseAuth.getCurrentUser() == null){
+            operationState.onFailure(OperationCB.USER_NOT_LOGGED_IN);
+            return;
+        }
+
+        mealLocalDataSource.insertPlannedMeal(meal, new OperationState() {
+            @Override
+            public void onSuccess() {
+                firebaseDB.addUserPlannedMeal(meal, firebaseAuth.getCurrentUser().getUid(), new AddUserCB() {
+                    @Override
+                    public void onSuccess() {
+                        operationState.onSuccess();
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        operationState.onFailure(OperationCB.NETWORK_ERROR);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure() {
+            operationState.onFailure(OperationCB.DUPLICATE_PLANNED_MEAL);
+            }
+        });
+
     }
 
-    public void removePlannedMealFromRemote(int mealID,AddUserCB callBack){
-        firebaseDB.removePlannedMeal(firebaseUser.getUid(),mealID,callBack);
+    public void removePlannedMeal(PlannedMeal meal, OperationCB operationState){
+        if(firebaseAuth.getCurrentUser() == null){
+            operationState.onFailure(OperationCB.USER_NOT_LOGGED_IN);
+            return;
+        }
+        firebaseDB.removePlannedMeal(firebaseAuth.getCurrentUser().getUid(), meal, new AddUserCB() {
+            @Override
+            public void onSuccess() {
+                mealLocalDataSource.deletePlannedMeal(meal, new OperationState() {
+                    @Override
+                    public void onSuccess() {
+                        operationState.onSuccess();
+                    }
+                    @Override
+                    public void onFailure() {
+                        operationState.onSuccess();
+                    }
+                });
+            }
+            @Override
+            public void onFailure() {
+                operationState.onFailure(OperationCB.NETWORK_ERROR);
+            }
+        });
     }
 
-    public void removePlannedMealByDateFromRemote(String date,AddUserCB callBack){
-        firebaseDB.removePlannedMealByDate(firebaseUser.getUid(),date,callBack);
+    public void removePlannedMealByDate(int day,int month,int year,OperationCB operationCB){
+        if(firebaseAuth.getCurrentUser() == null){
+            operationCB.onFailure(OperationCB.USER_NOT_LOGGED_IN);
+            return;
+        }
+        firebaseDB.removePlannedMealByDate(firebaseAuth.getCurrentUser().getUid(), PlannedMeal.getFormattedDate(day, month, year), new AddUserCB() {
+            @Override
+            public void onSuccess() {
+                mealLocalDataSource.deletePlannedMealByDate(day, month, year, new OperationState() {
+                    @Override
+                    public void onSuccess() {
+                        operationCB.onSuccess();
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        operationCB.onSuccess();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure() {
+                operationCB.onFailure(OperationCB.NETWORK_ERROR);
+            }
+        });
     }
+
     public void changeUserDisplayName(String uid,String new_name,@Nullable AddUserCB callBack){
         firebaseDB.changeUserDisplayName(uid,new_name,callBack);
     }
