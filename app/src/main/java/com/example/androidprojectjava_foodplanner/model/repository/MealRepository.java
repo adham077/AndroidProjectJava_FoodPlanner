@@ -1,5 +1,8 @@
 package com.example.androidprojectjava_foodplanner.model.repository;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.androidprojectjava_foodplanner.local.database.FavouriteMealCB;
@@ -24,10 +27,17 @@ public class MealRepository {
     private MealRepository(MealRemoteDataSource remoteDataSource, MealLocalDataSource localDataSource){
         this.remoteDataSource = remoteDataSource;
         this.localDataSource = localDataSource;
+
     }
 
     public static MealRepository getInstance(MealRemoteDataSource remoteDataSource, MealLocalDataSource localDataSource){
         if(instance == null){
+            if(remoteDataSource == null){
+                Log.i("MealRepositoryCon","remoteDataSource is null");
+            }
+            else{
+                Log.i("MealRepositoryCon","remoteDataSource is not null");
+            }
             instance = new MealRepository(remoteDataSource,localDataSource);
         }
         return instance;

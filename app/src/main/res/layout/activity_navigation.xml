@@ -1,10 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FAF9F6"
+    android:paddingTop="32dp"
     tools:context=".AppNavigationView.navigationActivity.view.NavigationActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="289dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="Food Planner"
+        android:textColor="#333333"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+<TextView
+android:id="@+id/subheading"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Discover and plan your meals"
+android:textSize="14sp"
+android:textColor="#666666"
+android:fontFamily="sans-serif"
+app:layout_constraintTop_toBottomOf="@id/titleText"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+android:layout_marginTop="4dp" />
+
+
+<FrameLayout
+android:id="@+id/NavViewFrameLayout"
+android:layout_width="0dp"
+android:layout_height="0dp"
+android:layout_marginTop="16dp"
+android:layout_marginStart="16dp"
+android:layout_marginEnd="16dp"
+android:layout_marginBottom="8dp"
+android:background="@drawable/fragment_container_bg"
+android:clipToOutline="true"
+app:layout_constraintTop_toBottomOf="@id/subheading"
+app:layout_constraintBottom_toTopOf="@id/NavViewMenuBar"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent" />
+
+<com.google.android.material.bottomnavigation.BottomNavigationView
+android:id="@+id/NavViewMenuBar"
+android:layout_width="0dp"
+android:layout_height="wrap_content"
+android:background="@drawable/bottom_nav_shape"
+android:elevation="8dp"
+
+app:menu="@menu/bottom_nav_menu"
+app:labelVisibilityMode="labeled"
+app:itemIconTint="@color/selector_nav_color"
+app:itemTextColor="@color/selector_nav_color"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

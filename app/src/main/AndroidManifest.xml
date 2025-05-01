@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +17,9 @@
         android:theme="@style/Theme.AndroidProjectJava_FoodPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".AppNavigationView.details.view.MealDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".account.create.view.CreateAccount"
             android:exported="false" />
         <activity
@@ -25,7 +29,7 @@
             android:name=".account.login.view.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".main.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,7 @@
 package com.example.androidprojectjava_foodplanner.remote.meal;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -56,6 +57,7 @@ public class MealRemoteDataSource {
     }
 
     public void getRandomMeal(MealNetworkCB callBack){
+
         Call<MealNetworkWrapper> call = mealService.getRandomMeal();
         call.enqueue(new Callback<MealNetworkWrapper>() {
             @Override

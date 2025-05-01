@@ -2,9 +2,9 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/accountNavBar"
-        android:icon="@drawable/account_asset"
-        android:title="account" />
+        android:id="@+id/searchNavBar"
+        android:icon="@drawable/search_asset"
+        android:title="search" />
     <item
         android:id="@+id/calendarNavBar"
         android:icon="@drawable/calendar_asset"
@@ -18,7 +18,7 @@
         android:icon="@drawable/favourite_asset"
         android:title="fabourite" />
     <item
-        android:id="@+id/searchNavBar"
-        android:icon="@drawable/search_asset"
-        android:title="search" />
+        android:id="@+id/accountNavBar"
+        android:icon="@drawable/account_asset"
+        android:title="account" />
 </menu>

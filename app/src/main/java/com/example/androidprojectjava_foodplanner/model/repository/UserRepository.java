@@ -63,8 +63,18 @@ public class UserRepository{
         AddUserCB addUserCB = new AddUserCB() {
             @Override
             public void onSuccess() {
-                syncRemoteToLocal(null);
-                CB.onSuccess();
+                syncRemoteToLocal(new SyncingCallBacks() {
+                    @Override
+                    public void taskCompleted(int status) {
+                        if(status == SUCCESS){
+                            CB.onSuccess();
+                        }
+                        else{
+                            CB.onFailure(OperationCB.NETWORK_ERROR);
+                        }
+                    }
+                });
+
             }
 
             @Override
@@ -447,4 +457,7 @@ public class UserRepository{
         firebaseDB.changeUserDisplayName(uid,new_name,callBack);
     }
 
+    public boolean isLoggedIn(){
+        return firebaseAuth.getCurrentUser() != null;
+    }
 }

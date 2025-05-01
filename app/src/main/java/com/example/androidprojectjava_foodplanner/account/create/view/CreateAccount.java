@@ -38,17 +38,6 @@ public class CreateAccount extends AppCompatActivity implements CreateAccountCon
                 UserRemoteDataSource.getInstance(this)
         );
         presenter = CreateAccountPresenter.getInstance(userRepository,this);
-        userRepository.signup("adham.walaa@gmail.com", "12345678", "adham", new OperationCB() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onFailure(int errorID) {
-
-            }
-        });
     }
 
     public void createBtnHandler(){
