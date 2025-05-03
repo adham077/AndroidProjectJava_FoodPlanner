@@ -142,4 +142,12 @@ public class MealRepository {
     public void insertFavouriteMealsLocal(List<FavouriteMeal> meals,OperationState operationState){
         localDataSource.insertFavouriteMeals(meals,operationState);
     }
+
+    public void getAllFavouriteMeals(FavouriteMealsDBCallBack callBack){
+        localDataSource.getAllFavouriteMeals(callBack);
+    }
+
+    public void getAllPlannedMeals(PlannedMealsDBCallBack callBack){
+        localDataSource.getAllPlannedMeals(callBack);
+    }
 }

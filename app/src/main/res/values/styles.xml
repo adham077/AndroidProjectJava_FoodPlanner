@@ -7,11 +7,18 @@
         <!-- Customize your theme here -->
     </style>
 
-    <!-- Add these bottom navigation styles -->
+
     <style name="BottomNavTextActive" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">12sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="PistachioCalendarTheme" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/primary_pistachio</item>
+        <item name="android:colorBackground">@color/background_cream</item>
+        <item name="android:textColorPrimary">@color/secondary_brown</item>
+        <item name="android:textColorSecondary">@color/primary_dark</item>
     </style>
 
     <style name="BottomNavTextInactive" parent="TextAppearance.AppCompat.Caption">

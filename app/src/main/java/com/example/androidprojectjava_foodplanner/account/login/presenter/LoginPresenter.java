@@ -31,6 +31,7 @@ public class LoginPresenter {
             @Override
             public void onSuccess() {
                 view.LoginStateActions(LoginState.SUCCESS);
+                userRepository.syncMealImages(view.getContext());
             }
 
             @Override

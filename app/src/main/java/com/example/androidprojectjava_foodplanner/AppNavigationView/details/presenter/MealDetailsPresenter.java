@@ -17,12 +17,14 @@ import com.example.androidprojectjava_foodplanner.model.repository.UserRepositor
 import com.example.androidprojectjava_foodplanner.remote.meal.MealNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.ingredients.IngredientsNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.ingredients.IngredientsRemoteDataSource;
+import com.google.firebase.firestore.auth.User;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealDetailsPresenter {
     private MealRepository mealRepository;
@@ -114,8 +116,92 @@ public class MealDetailsPresenter {
                 }
             });
         }
+        else if(senderID.equals("FavouriteFragment")){
+            mealRepository.getFavouriteMealByMealIDLocal(mealID, new FavouriteMealCB() {
+                @Override
+                public void found(FavouriteMeal meal) {
+                    if(meal == null)return;
+                    Meal _meal = (Meal)meal;
+                    List<String> formattedIngredients = new ArrayList<>();
+
+                    for(int i=0;i<_meal.getIngredients().size();i++){
+                        formattedIngredients.add((_meal.getIngredients().get(i)));
+                    }
+
+                    List<Meal>_meals = new ArrayList<>();
+                    _meals.add(_meal);
+
+                    AtomicInteger counter = new AtomicInteger(0);
+
+                    class GetImages implements Runnable{
+                        private List<Bitmap> image;
+                        private List<Bitmap> ingredientImages;
+                        private AtomicInteger counter;
+
+                        GetImages(){
+                            this.image = null;
+                            this.ingredientImages = null;
+                            counter = new AtomicInteger(0);
+                        }
+
+                        public void mealImageDone(List<Bitmap> image){
+                            this.image = image;
+                            this.run();
+                        }
+
+                        public void ingredientImageDone(List<Bitmap> ingredientImages){
+                            this.ingredientImages = ingredientImages;
+                            this.run();
+                        }
+
+                        @Override
+                        public void run() {
+                            if(counter.incrementAndGet() == 2){
+                                view.showMealDetailsFromFav(image,ingredientImages,_meal);
+                            }
+                        }
+                    };
+
+                    GetImages getImages = new GetImages();
+
+                    userRepository.getMealSavedImages(_meals, view.provideContext(), new UserRepository.MealImagesCB() {
+                        @Override
+                        public void onSuccess(List<Bitmap> imagesBitmap) {
+                            getImages.mealImageDone(imagesBitmap);
+                        }
+
+                        @Override
+                        public void onFailure(String message) {
+
+                        }
+                    });
+
+                    ingredientsRemoteDataSource.getIngredientImagesFromLocal(formattedIngredients, new IngredientsNetworkCB() {
+                        @Override
+                        public void onSuccess(List<Bitmap> imagesBitmap) {
+                            getImages.ingredientImageDone(imagesBitmap);
+                        }
+
+                        @Override
+                        public void onSuccess(Bitmap imageBitmap) {
+
+                        }
+
+                        @Override
+                        public void onFailure(String message) {
+
+                        }
+                    });
+
+                }
+            });
+        }
+        else{
+
+        }
     }
     public void onFavClicked(int mealID){
+        if(mealID == 0)return;
         mealRepository.getFavouriteMealByMealIDLocal(mealID, new FavouriteMealCB() {
             @Override
             public void found(FavouriteMeal meal) {
@@ -149,6 +235,8 @@ public class MealDetailsPresenter {
                                             ingredientsNames,
                                             new IngredientsRemoteDataSource.SaveIngredients(ingredientsNames)
                                     );
+                                    Thread myThread = new Thread(new UserRepository.SaveMealImageToLocal(meal,view.provideContext()));
+                                    myThread.start();
                                 }
 
                                 @Override

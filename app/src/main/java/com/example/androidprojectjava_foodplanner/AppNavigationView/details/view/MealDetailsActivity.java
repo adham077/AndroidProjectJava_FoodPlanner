@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -56,6 +57,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealDetailsActivity extends AppCompatActivity implements MealDetailsContract{
@@ -63,6 +65,12 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     private LoadActivityComm loadActivity;
     private MealDetailsPresenter presenter;
     private FloatingActionButton floatingActionButton;
+
+    private List<Bitmap> ingredientImages;
+    private List<Bitmap> mealImage;
+
+    private Meal savedMeal;
+
     private Handler mainHandler;
 
     @Override
@@ -108,10 +116,18 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         mainHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
-                Bundle bundle = msg.getData();
-                Meal meal = (Meal) bundle.getSerializable("meal");
-                List<Ingredient> ingredients = (List<Ingredient>) bundle.getSerializable("ingredientList");
-                showMealDetailsMainThread(meal,ingredients);
+                switch(msg.what){
+                    case 1:
+                        Bundle bundle = msg.getData();
+                        Meal meal = (Meal) bundle.getSerializable("meal");
+                        List<Ingredient> ingredients = (List<Ingredient>) bundle.getSerializable("ingredientList");
+                        showMealDetailsMainThread(meal,ingredients);
+                        break;
+                    case 2:
+                        showMealDetailsFromFavMainThread(mealImage,ingredientImages);
+                        break;
+                }
+
             }
         };
 
@@ -128,9 +144,64 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     public void showLoading() {
 
     }
+
+    public void showMealDetailsFromFav(List<Bitmap>mealImage,List<Bitmap>ingredientImages,Meal meal){
+        this.ingredientImages = ingredientImages;
+        this.mealImage = mealImage;
+        this.savedMeal = meal;
+        Message msg = Message.obtain();
+        msg.what = 2;
+        mainHandler.sendMessage(msg);
+    }
+
+    public void showMealDetailsFromFavMainThread(List<Bitmap>mealImage,List<Bitmap>ingredientImages){
+        Meal meal = this.savedMeal;
+        Glide.with(this.getApplicationContext()).asBitmap().load(mealImage.get(0)).into((ImageView)findViewById(R.id.mealDetailsImageView));
+        ((TextView)findViewById(R.id.mealDetailsInstructionsTextView)).setText(meal.getInstructions());
+        ((TextView)findViewById(R.id.mealTitleTextView)).setText(meal.getName());
+
+        WebView webView = findViewById(R.id.mealDetailsWebView);
+        MaterialCardView videoCard = findViewById(R.id.mealDetailsVideoCard);
+        videoCard.setVisibility(View.VISIBLE);
+
+        String youtubeUrl = meal.getVideoUrl();
+        String videoId = extractYouTubeId(youtubeUrl);
+        setupYouTubeVideo(videoId);
+
+        List<Ingredient>ingredientList = new ArrayList<>();
+
+        for(int i=0;i<meal.getIngredients().size();i++){
+            ingredientList.add(new Ingredient(meal.getIngredients().get(i),meal.getMeasurements().get(i),ingredientImages.get(i)));
+        }
+
+        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(ingredientList);
+        RecyclerView recyclerView = findViewById(R.id.mealDetailsIngredientsRecycler);
+        recyclerView.setAdapter(ingredientsAdapter);
+        Log.i("ShowingDetails","Success");
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
+                this.getApplicationContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+        );
+        int itemSpacing = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                16,
+                getResources().getDisplayMetrics()
+        );
+
+        recyclerView.addItemDecoration(new ItemSpacingDecoration(itemSpacing));
+        recyclerView.setAdapter(new IngredientsAdapter(ingredientList));
+
+        if (recyclerView.getOnFlingListener() == null) {
+            SnapHelper snapHelper = new PagerSnapHelper();
+            snapHelper.attachToRecyclerView(recyclerView);
+        }
+    }
+
     @Override
     public void showMealDetails(Meal meal, List<Ingredient> ingredientList) {
         Message msg = Message.obtain();
+        msg.what = 1;
         Bundle bundle = new Bundle();
         bundle.putSerializable("meal", meal);
         bundle.putSerializable("ingredientList", (Serializable) ingredientList);
@@ -191,7 +262,7 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     public void highlightFav() {
         floatingActionButton.setSupportImageTintList(
                 ColorStateList.valueOf(
-                        ContextCompat.getColor(getApplicationContext(), R.color.red)
+                        ContextCompat.getColor(getApplicationContext(), R.color.primary_pistachio)
                 )
         );
     }
@@ -200,7 +271,7 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     public void unhighlightFav() {
         floatingActionButton.setSupportImageTintList(
                 ColorStateList.valueOf(
-                        ContextCompat.getColor(getApplicationContext(),  R.color.primary_pistachio)
+                        ContextCompat.getColor(getApplicationContext(),  R.color.secondary_text)
                 )
         );
     }

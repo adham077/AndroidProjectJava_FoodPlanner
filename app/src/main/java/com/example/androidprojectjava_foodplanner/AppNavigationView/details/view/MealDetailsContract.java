@@ -1,5 +1,7 @@
 package com.example.androidprojectjava_foodplanner.AppNavigationView.details.view;
 
+import android.graphics.Bitmap;
+
 import com.example.androidprojectjava_foodplanner.model.pojo.Ingredient;
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 
@@ -18,6 +20,7 @@ public interface MealDetailsContract {
 
     void highlightFav();
     void unhighlightFav();
+    void showMealDetailsFromFav(List<Bitmap>mealImage, List<Bitmap>ingredientImages,Meal meal);
 
     Object provideContext();
 }

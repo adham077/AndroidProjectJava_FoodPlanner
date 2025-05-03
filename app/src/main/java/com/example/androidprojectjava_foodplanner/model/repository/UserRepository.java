@@ -1,16 +1,20 @@
 package com.example.androidprojectjava_foodplanner.model.repository;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.credentials.exceptions.domerrors.NetworkError;
 
 import com.example.androidprojectjava_foodplanner.local.database.MealLocalDataSource;
 import com.example.androidprojectjava_foodplanner.local.database.OperationState;
 import com.example.androidprojectjava_foodplanner.model.pojo.FavouriteMeal;
+import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannedMeal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannerUser;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
+import com.example.androidprojectjava_foodplanner.remote.meal.ingredients.IngredientsRemoteDataSource;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.OnDeletionCallBack;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.OnLoginCallBack;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.OnSignupCallBack;
@@ -20,7 +24,16 @@ import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseD
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.UserRemoteDataSource;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserRepository{
     private static UserRepository instance = null;
@@ -182,6 +195,7 @@ public class UserRepository{
         final boolean[] insertedArr = {false,false};
 
 
+
         Runnable notifyuserRunnable = new Runnable() {
             @Override
             public void run() {
@@ -201,6 +215,7 @@ public class UserRepository{
                             mealRepository.insertPlannedMealsLocal(myUser[0].getPlannedMeals(), new OperationState() {
                                 @Override
                                 public void onSuccess() {
+
                                     Log.i("syncLocalToRemote","inserted planned");
                                     insertedArr[0] = true;
                                     notifyuserRunnable.run();
@@ -253,6 +268,60 @@ public class UserRepository{
             }
         });
 
+    }
+
+    public void syncMealImages(Object context){
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if(user == null){
+            return;
+        }
+        firebaseDB.getUserDataById(user.getUid(), new GetUserCB() {
+            @Override
+            public void onSuccess(PlannerUser plannerUser) {
+                List<PlannedMeal> plannedMeals = plannerUser.getPlannedMeals();
+                List<FavouriteMeal> favouriteMeals = plannerUser.getFavouriteMeals();
+
+                List<Meal> _plannedMeals = new ArrayList<>();
+                List<Meal> _favouriteMeals = new ArrayList<>();
+
+                for(PlannedMeal plannedMeal: plannedMeals){
+                    _plannedMeals.add(plannedMeal.getMeal());
+                }
+                _favouriteMeals.addAll(favouriteMeals);
+
+                IngredientsRemoteDataSource ingredientsRemoteDataSource = IngredientsRemoteDataSource.getInstance(context);
+
+                for(Meal meal: _plannedMeals){
+                    List<String>ingredientsNames = new ArrayList<>();
+                    for(int i=0;i<meal.getIngredients().size();i++){
+                        ingredientsNames.add(meal.getIngredients().get(i));
+                    }
+                    ingredientsRemoteDataSource.getIngredientsImages(
+                            ingredientsNames,
+                            new IngredientsRemoteDataSource.SaveIngredients(ingredientsNames)
+                    );
+                    Thread myThread = new Thread(new SaveMealImageToLocal(meal,context));
+                    myThread.start();
+                }
+
+                for(Meal meal: _favouriteMeals){
+                    List<String>ingredientsNames = new ArrayList<>();
+                    for(int i=0;i<meal.getIngredients().size();i++){
+                        ingredientsNames.add(meal.getIngredients().get(i));
+                    }
+                    ingredientsRemoteDataSource.getIngredientsImages(
+                            ingredientsNames,
+                            new IngredientsRemoteDataSource.SaveIngredients(ingredientsNames)
+                    );
+                    Thread myThread = new Thread(new SaveMealImageToLocal(meal,context));
+                    myThread.start();
+                }
+            }
+            @Override
+            public void onFailure() {
+
+            }
+        });
     }
 
     public void syncRemoteToLocal(SyncingCallBacks CB){
@@ -473,5 +542,77 @@ public class UserRepository{
         else{
             return firebaseAuth.getCurrentUser().getDisplayName();
         }
+    }
+
+    public static class SaveMealImageToLocal implements Runnable{
+
+        Meal meal;
+        private Context context;
+
+
+        public SaveMealImageToLocal(Meal meal, Object context){
+            this.meal = meal;
+            this.context = (Context) context;
+
+        }
+
+        public  String formatName(String name){
+            return name.replace(" ","_") + ".png";
+        }
+
+        @Override
+        public void run() {
+            File imagesDir = new File(context.getFilesDir(), "mealimages");
+            if (!imagesDir.exists()) {
+                imagesDir.mkdirs();
+            }
+
+            String imageUrl = meal.getImageUrl();
+            if (imageUrl == null || imageUrl.isEmpty()) {
+                return;
+            }
+            String fileName = formatName(meal.getName());
+            File imageFile = new File(imagesDir, fileName);
+            if (imageFile.exists()) {
+                return;
+            }
+            try {
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(input);
+                FileOutputStream out = new FileOutputStream(imageFile);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.close();
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static interface MealImagesCB{
+        public void onSuccess(List<Bitmap> imagesBitmap);
+        public void onFailure(String message);
+    }
+
+    public void getMealSavedImages(List<Meal> mealList,Object context,MealImagesCB callBack){
+        List<Bitmap> bitmaps = new ArrayList<>();
+        Context myContext = (Context) context;
+        File imagesDir = new File(myContext.getFilesDir(), "mealimages");
+        if (!imagesDir.exists()) {
+            callBack.onFailure("no images");
+            return;
+        }
+        for(Meal meal: mealList){
+            String fileName = meal.getName().replace(" ","_") + ".png";
+            File imageFile = new File(imagesDir, fileName);
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            bitmaps.add(bitmap);
+        }
+        callBack.onSuccess(bitmaps);
     }
 }
