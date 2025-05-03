@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.androidprojectjava_foodplanner.AppNavigationView.home.presenter.HomePresenter;
 import com.example.androidprojectjava_foodplanner.R;
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>{
 
     private List<Meal> meals;
+    private HomePresenter presenter;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
@@ -34,8 +36,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>{
         }
     }
 
-    public HomeAdapter(List<Meal> meals) {
+    public HomeAdapter(List<Meal> meals,HomePresenter presenter) {
         this.meals = meals;
+        this.presenter = presenter;
+    }
+
+    public void setPresenter(HomePresenter presenter){
+        this.presenter = presenter;
     }
 
     public void setList(List<Meal> meals){
@@ -64,7 +71,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>{
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                presenter.getMealDetails(meal.getId());
             }
         });
     }

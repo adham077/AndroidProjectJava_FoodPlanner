@@ -12,6 +12,7 @@ import com.example.androidprojectjava_foodplanner.account.login.view.LoginActivi
 import com.example.androidprojectjava_foodplanner.local.database.MealLocalDataSource;
 import com.example.androidprojectjava_foodplanner.main.presenter.MainPresenter;
 import com.example.androidprojectjava_foodplanner.model.repository.UserRepository;
+import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.UserAuthentication;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.UserRemoteDataSource;
 
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         setContentView(R.layout.activity_main);
         UserRepository userRepository = UserRepository.getInstance(
                 MealLocalDataSource.getInstance(this),
+                MealRemoteDataSource.getInstance(this),
                 UserAuthentication.getInstance(),
                 UserRemoteDataSource.getInstance(this.getApplicationContext())
         );
@@ -38,13 +40,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     public void init(UserState state) {
         if(state == UserState.LOGGED_IN){
             Intent intent = new Intent(MainActivity.this, NavigationActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         }
         else{
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         }

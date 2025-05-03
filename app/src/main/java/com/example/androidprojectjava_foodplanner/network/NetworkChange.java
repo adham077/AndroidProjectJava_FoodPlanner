@@ -16,11 +16,7 @@ public class NetworkChange extends BroadcastReceiver {
 
     public static NetworkChange getInstance() {
         if (instance == null) {
-            synchronized (NetworkChange.class) {
-                if (instance == null) {
-                    instance = new NetworkChange();
-                }
-            }
+            instance = new NetworkChange();
         }
         return instance;
     }
@@ -45,6 +41,7 @@ public class NetworkChange extends BroadcastReceiver {
     }
 
     public boolean isConnected(Object context) {
+
         ConnectivityManager cm = (ConnectivityManager) ((Context)context).getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) return false;
         Network network = cm.getActiveNetwork();

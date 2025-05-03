@@ -2,9 +2,10 @@ package com.example.androidprojectjava_foodplanner.model.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-public class Meal {
+public class Meal implements Serializable {
     @SerializedName("idMeal")
     protected int id;
 

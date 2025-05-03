@@ -4,4 +4,18 @@
     <dimen name="nav_bar_vertical_margin">8dp</dimen>
     <dimen name="nav_bar_max_width">560dp</dimen>
     <dimen name="nav_bar_height">72dp</dimen>
+
+    <dimen name="card_margin">16dp</dimen>
+    <dimen name="element_spacing">8dp</dimen>
+    <dimen name="section_spacing">24dp</dimen>
+
+
+    <dimen name="ingredient_image_size">100dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+
+
+    <dimen name="title_text">20sp</dimen>
+    <dimen name="body_text">16sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
 </resources>

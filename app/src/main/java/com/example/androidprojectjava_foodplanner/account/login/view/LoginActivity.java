@@ -46,6 +46,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewContrac
 
         UserRepository userRepository = UserRepository.getInstance(
                 MealLocalDataSource.getInstance(this),
+                MealRemoteDataSource.getInstance(this),
                 UserAuthentication.getInstance(),
                 UserRemoteDataSource.getInstance(this)
         );
@@ -145,7 +146,6 @@ public class LoginActivity extends AppCompatActivity implements LoginViewContrac
             case SUCCESS:
                 Intent intent = new Intent(LoginActivity.this,NavigationActivity.class);
                 intent.putExtra("guest",false);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
                 break;

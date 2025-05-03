@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="160dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@drawable/bg_ingredient_item">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ingredientsImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedCircle"
+        app:strokeColor="@color/primary_pistachio"
+        app:strokeWidth="1.5dp"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/ingredientsNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAlignment="center"
+        android:textSize="15sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/primary_text"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"/>
+
+    <TextView
+        android:id="@+id/ingredientsMeasurementTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAlignment="center"
+        android:textSize="13sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/secondary_text"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"/>
+
+</LinearLayout>

@@ -4,6 +4,7 @@ package com.example.androidprojectjava_foodplanner.AppNavigationView.home.view;
 import static androidx.core.content.ContextCompat.registerReceiver;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.androidprojectjava_foodplanner.AppNavigationView.details.view.MealDetailsActivity;
 import com.example.androidprojectjava_foodplanner.AppNavigationView.home.presenter.HomePresenter;
 import com.example.androidprojectjava_foodplanner.AppNavigationView.navigationActivity.view.FragComm;
 import com.example.androidprojectjava_foodplanner.R;
@@ -36,13 +39,11 @@ import com.example.androidprojectjava_foodplanner.local.database.MealLocalDataSo
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 import com.example.androidprojectjava_foodplanner.model.repository.MealRepository;
 import com.example.androidprojectjava_foodplanner.network.NetworkChange;
-import com.example.androidprojectjava_foodplanner.remote.meal.MealNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
 
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -56,15 +57,14 @@ public class HomeFragment extends Fragment implements HomeContract{
     private View myView;
     private MealRemoteDataSource mealRemoteDataSource;
     private MealLocalDataSource mealLocalDataSource;
-
-    private  Meal randMeal;
-
     private int randMealId;
     private String randMealImageUrl;
     private String randMealTitle;
     private HomePresenter presenter;
 
     private boolean newDate;
+
+    private boolean returned;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,6 +80,8 @@ public class HomeFragment extends Fragment implements HomeContract{
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        Log.i("onViewCreated","hello");
+        returned = false;
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
 
@@ -119,22 +121,31 @@ public class HomeFragment extends Fragment implements HomeContract{
         offlineView = view.findViewById(R.id.offline_state);
         randomMealTitle = view.findViewById(R.id.mealTitleRandom);
         randomMealImage = view.findViewById(R.id.mealImageRandom);
+        CardView randomMealCardView = view.findViewById(R.id.mealOfTheDayCard);
 
         mealLocalDataSource = MealLocalDataSource.getInstance(this.getContext());
         mealRemoteDataSource = MealRemoteDataSource.getInstance(this.getContext());
 
+        NetworkChange networkChange = NetworkChange.getInstance();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(this.getContext(),networkChange, filter, ContextCompat.RECEIVER_EXPORTED);
+
         MealRepository mealRepository = MealRepository.getInstance(mealRemoteDataSource,mealLocalDataSource);
-        presenter = HomePresenter.getInstance(mealRepository,this);
+        presenter = HomePresenter.getInstance(mealRepository,this,networkChange);
+
         FragComm fragComm = (FragComm)getActivity();
+
         presenter.setNavComm(fragComm);
 
         presenter.init();
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        NetworkChange networkChange = presenter.getNetworkChange();
-        registerReceiver(this.getContext(),networkChange, filter, ContextCompat.RECEIVER_EXPORTED);
+
+        randomMealCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getMealDetails(randMealId);
+            }
+        });
     }
-
-
 
     @Override
     public void showOfflineView() {
@@ -144,7 +155,8 @@ public class HomeFragment extends Fragment implements HomeContract{
 
     @Override
     public void showOnlineView(@NonNull Meal randomMeal,@NonNull List<Meal> meals) {
-
+        if (isStateSaved()) return;
+        Log.i("Aragorn_21","showingOnlineView");
         offlineView.setVisibility(View.GONE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 this.getContext(),
@@ -158,7 +170,8 @@ public class HomeFragment extends Fragment implements HomeContract{
                 getResources().getDisplayMetrics()
         );
         recyclerView.addItemDecoration(new ItemSpacingDecoration(itemSpacing));
-        recyclerView.setAdapter(new HomeAdapter(meals));
+
+        recyclerView.setAdapter(new HomeAdapter(meals,this.presenter));
         if (recyclerView.getOnFlingListener() == null) {
             SnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(recyclerView);
@@ -202,10 +215,33 @@ public class HomeFragment extends Fragment implements HomeContract{
     }
 
     @Override
-    public Object getAppContext() {
-        return this.getContext();
+    public void showMealDetails(int mealID){
+        FragComm fragComm = (FragComm)getActivity();
+        fragComm.showDetailsActivity(mealID,"HomeFragment");
     }
 
+    @Override
+    public boolean isFragmentActive() {
+        return isAdded() && !isDetached() && getActivity() != null;
+    }
 
+    @Override
+    public Object getAppContext() {
+        if (isAdded() && getActivity() != null) {
+            return getActivity().getApplicationContext();
+        } else {
+            return requireContext().getApplicationContext();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try {
+            requireContext().unregisterReceiver(presenter.getNetworkChange());
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
 }
 

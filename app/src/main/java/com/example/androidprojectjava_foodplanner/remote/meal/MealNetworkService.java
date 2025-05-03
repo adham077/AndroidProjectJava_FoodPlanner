@@ -28,4 +28,6 @@ public interface MealNetworkService {
 
     @GET("list.php?a=list")
     Call<CountryNetworkWrapper>getCountries();
+
+
 }

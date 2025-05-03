@@ -13,5 +13,8 @@ public interface HomeContract {
 
     void failedtoFetch();
 
+    void showMealDetails(int mealID);
+    public boolean isFragmentActive();
+
     Object getAppContext();
 }

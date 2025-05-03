@@ -31,20 +31,22 @@ public class UserRepository{
     private MealLocalDataSource mealLocalDataSource;
 
     private UserRepository(MealLocalDataSource mealLocalDataSource,
+                           MealRemoteDataSource mealRemoteDataSource,
                            UserAuthentication firebaseAuth,
                            UserRemoteDataSource firebaseDB){
-        mealRepository = MealRepository.getInstance(null,mealLocalDataSource);
+        mealRepository = MealRepository.getInstance(mealRemoteDataSource,mealLocalDataSource);
         this.firebaseAuth = firebaseAuth;
         this.firebaseDB = firebaseDB;
         this.mealLocalDataSource = mealLocalDataSource;
     }
 
     public static UserRepository getInstance(MealLocalDataSource mealLocalDataSource,
+                                             MealRemoteDataSource mealRemoteDataSource,
                                              UserAuthentication firebaseAuth,
                                              UserRemoteDataSource firebaseDB)
     {
         if(instance == null){
-            instance = new UserRepository(mealLocalDataSource,firebaseAuth,firebaseDB);
+            instance = new UserRepository(mealLocalDataSource,mealRemoteDataSource,firebaseAuth,firebaseDB);
         }
         firebaseUser = firebaseAuth.getCurrentUser();
         return instance;
@@ -459,5 +461,17 @@ public class UserRepository{
 
     public boolean isLoggedIn(){
         return firebaseAuth.getCurrentUser() != null;
+    }
+
+    public String getUserDisplayName(){
+        if(firebaseAuth.getCurrentUser() == null){
+            return null;
+        }
+        else if(firebaseAuth.getCurrentUser().getDisplayName() == null){
+            return  "Default";
+        }
+        else{
+            return firebaseAuth.getCurrentUser().getDisplayName();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.androidprojectjava_foodplanner.AppNavigationView.home.presenter;
 
+
 import android.util.Log;
 
 import com.example.androidprojectjava_foodplanner.AppNavigationView.home.view.HomeContract;
@@ -10,54 +11,60 @@ import com.example.androidprojectjava_foodplanner.network.NetworkChange;
 import com.example.androidprojectjava_foodplanner.network.NetworkListener;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealListNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealNetworkCB;
-import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
+
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HomePresenter {
-    private static FragComm fragComm;
-    private static HomePresenter instance = null;
-    private static NetworkChange networkChange;
-    private static MyListener listener;
-    private static MealRepository mealRepository;
-    private static HomeContract view;
+    private  FragComm fragComm;
+    private static   HomePresenter instance = null;
+    private  NetworkChange networkChange;
+    private  MyListener listener;
+    private  MealRepository mealRepository;
+    private  HomeContract view;
 
-    private HomePresenter(MealRepository mealRepository, HomeContract view){
-        HomePresenter.mealRepository = mealRepository;
-        HomePresenter.view = view;
+    private HomePresenter(MealRepository mealRepository, HomeContract view,NetworkChange networkChange){
+        this.mealRepository = mealRepository;
+        this.view = view;
+        this.networkChange = networkChange;
+        listener = new MyListener();
+        networkChange.setListener(listener);
     }
 
-    public static HomePresenter getInstance(MealRepository mealRepository, HomeContract view) {
+    public static HomePresenter getInstance(MealRepository mealRepository, HomeContract view,
+                                             NetworkChange networkChange) {
         if(instance == null){
-            instance = new HomePresenter(mealRepository,view);
+            instance = new HomePresenter(mealRepository,view,networkChange);
         }
-        listener = new MyListener();
-        networkChange = NetworkChange.getInstance();
-        networkChange.setListener(listener);
         return instance;
     }
 
-    private static void fetchMeals(){
+    private void fetchMeals(){
+        if (view == null || !view.isFragmentActive()) return;
+
+        Log.i("Aragorn_21","Fetching Meals");
         fragComm.showLoading();
-        final boolean[] fetched = {false,false};
+        AtomicBoolean fetchedRandom = new AtomicBoolean(false);
+        AtomicBoolean fetchedList = new AtomicBoolean(false);
         final List[] _meals = new List[1];
         final Meal[] randomMeal = new Meal[1];
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if(fetched[0] && fetched[1]){
+                if(fetchedRandom.get() && fetchedList.get()){
+                    Log.i("Aragorn_21","Fetching Successfuls");
                     fragComm.showHome();
                     view.showOnlineView(randomMeal[0],_meals[0]);
                 }
             }
         };
 
-
-        MealRemoteDataSource.getInstance(view.getAppContext()).getRandomMeal(new MealNetworkCB() {
+        mealRepository.getRandomMealRemote(new MealNetworkCB() {
             @Override
             public void onSuccess(Meal meal) {
-                fetched[0] = true;
+                fetchedRandom.set(true);
                 randomMeal[0] = meal;
                 runnable.run();
             }
@@ -68,10 +75,10 @@ public class HomePresenter {
             }
         });
 
-        MealRemoteDataSource.getInstance(view.getAppContext()).getMealsByName("chicken", new MealListNetworkCB() {
+        mealRepository.getMealsByNameRemote("chicken", new MealListNetworkCB() {
             @Override
             public void onSuccess(List<Meal> meals) {
-                fetched[1] = true;
+                fetchedList.set(true);
                 _meals[0] = meals;
                 runnable.run();
             }
@@ -91,20 +98,31 @@ public class HomePresenter {
         }
     }
 
-    static class MyListener implements NetworkListener{
+    class MyListener implements NetworkListener{
+        private boolean isFetching = false;
         @Override
         public void onChange(boolean isConnected) {
-            if(isConnected){
+            if (isConnected && !isFetching) {
+                isFetching = true;
                 fetchMeals();
-            }
-            else{
+                isFetching = false;
+            } else {
                 view.showOfflineView();
             }
         }
     }
 
+    public void getMealDetails(int mealId){
+        if(networkChange.isConnected(view.getAppContext())){
+            view.showMealDetails(mealId);
+        }
+        else{
+            view.failedtoFetch();
+        }
+    }
+
     public void setNavComm(FragComm fragComm){
-        HomePresenter.fragComm = fragComm;
+        this.fragComm = fragComm;
     }
 
     public NetworkChange getNetworkChange(){

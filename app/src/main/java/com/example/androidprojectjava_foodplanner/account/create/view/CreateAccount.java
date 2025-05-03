@@ -18,6 +18,7 @@ import com.example.androidprojectjava_foodplanner.account.create.presenter.Creat
 import com.example.androidprojectjava_foodplanner.local.database.MealLocalDataSource;
 import com.example.androidprojectjava_foodplanner.model.repository.OperationCB;
 import com.example.androidprojectjava_foodplanner.model.repository.UserRepository;
+import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.UserAuthentication;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.UserRemoteDataSource;
 import com.google.android.material.textfield.TextInputEditText;
@@ -34,6 +35,7 @@ public class CreateAccount extends AppCompatActivity implements CreateAccountCon
         createBtnHandler();
         UserRepository userRepository = UserRepository.getInstance(
                 MealLocalDataSource.getInstance(this),
+                MealRemoteDataSource.getInstance(this),
                 UserAuthentication.getInstance(),
                 UserRemoteDataSource.getInstance(this)
         );

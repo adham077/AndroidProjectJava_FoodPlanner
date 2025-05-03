@@ -5,4 +5,27 @@
     <color name="red">#FF0000</color>>
     <color name="red_login_screen">#D61355</color>
     <color name="colorPrimary">#F51A0D</color>
+    <color name="primary_pistachio">#93C572</color>
+    <color name="primary_dark">#6B8F53</color>
+    <color name="primary_light">#B7D9A5</color>
+
+
+    <color name="secondary_beige">#E3D8C5</color>
+    <color name="secondary_brown">#795548</color>
+
+
+    <color name="background_cream">#FFFDF6</color>
+    <color name="surface_white">#FFFFFF</color>
+
+
+    <color name="primary_text">#4A4A4A</color>
+    <color name="secondary_text">#787878</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <color name="error_color">#B00020</color>        <!-- Red for errors -->
+    <color name="error_dark">#8A001A</color>
+
+    <!-- Additional Accents -->
+    <color name="accent_beige">#E3D8C5</color>       <!-- Warm beige -->
+    <color name="accent_brown">#795548</color>       <!-- Earthy brown -->
 </resources>
