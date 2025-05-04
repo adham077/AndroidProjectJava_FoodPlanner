@@ -169,4 +169,19 @@ public class MealRemoteDataSource {
         });
     }
 
+    public void getIngredients(IngredientNetworkCB callBack){
+        Call<IngredientNetworkWrapper> call = mealService.getIngredients();
+        call.enqueue(new Callback<IngredientNetworkWrapper>() {
+            @Override
+            public void onResponse(@NonNull Call<IngredientNetworkWrapper> call, @NonNull Response<IngredientNetworkWrapper> response) {
+                assert response.body() != null;
+                callBack.onSuccess(response.body().getIngredientList());
+            }
+            @Override
+            public void onFailure(@NonNull Call<IngredientNetworkWrapper> call, @NonNull Throwable t) {
+                callBack.onFailure(t.getMessage());
+            }
+        });
+    }
+
 }

@@ -12,18 +12,28 @@
         android:background="@android:color/transparent"
         android:elevation="0dp">
 
-        <com.google.android.material.search.SearchBar
-            android:id="@+id/searchBar"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/searchInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Search..."
-            app:backgroundColor="@color/surface_white"
-            app:strokeColor="@color/primary_light"
-            app:strokeWidth="1dp"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            app:boxBackgroundColor="@color/surface_white"
+            app:boxStrokeColor="@color/primary_light"
+            app:boxStrokeWidth="1dp"
+            android:layout_margin="16dp">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- ChipGroup for filters -->
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroup"
+            android:id="@+id/chipGroupid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -37,6 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ingredients"
+                android:checkable="true"
                 app:chipBackgroundColor="@color/chip_background_selector"
                 app:chipStrokeColor="@color/primary_pistachio"
                 app:chipStrokeWidth="1dp"
@@ -49,6 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Categories"
+                android:checkable="true"
                 app:chipBackgroundColor="@color/chip_background_selector"
                 app:chipStrokeColor="@color/primary_pistachio"
                 app:chipStrokeWidth="1dp"
@@ -61,17 +73,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Countries"
+                android:checkable="true"
                 app:chipBackgroundColor="@color/chip_background_selector"
                 app:chipStrokeColor="@color/primary_pistachio"
                 app:chipStrokeWidth="1dp"
                 app:checkedIcon="@null"
                 app:chipCornerRadius="8dp"
                 app:rippleColor="@color/primary_light"/>
-
         </com.google.android.material.chip.ChipGroup>
-
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Hidden SearchView to overlay input -->
+
+    <!-- RecyclerView for search results -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchRecycler"
         android:layout_width="match_parent"
@@ -80,5 +94,4 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -72,7 +72,6 @@ public class LoginActivity extends AppCompatActivity implements LoginViewContrac
             public void onClick(@NonNull View widget) {
                 Intent intent = new Intent(LoginActivity.this, NavigationActivity.class);
                 intent.putExtra("guest",true);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }

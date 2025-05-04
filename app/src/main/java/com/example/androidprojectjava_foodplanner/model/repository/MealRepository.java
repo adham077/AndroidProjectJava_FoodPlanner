@@ -13,6 +13,7 @@ import com.example.androidprojectjava_foodplanner.model.pojo.FavouriteMeal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannedMeal;
 import com.example.androidprojectjava_foodplanner.remote.meal.CategoriesNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.CountriesNetworkCB;
+import com.example.androidprojectjava_foodplanner.remote.meal.IngredientNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealListNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealNetworkCB;
 import com.example.androidprojectjava_foodplanner.remote.meal.MealRemoteDataSource;
@@ -149,5 +150,9 @@ public class MealRepository {
 
     public void getAllPlannedMeals(PlannedMealsDBCallBack callBack){
         localDataSource.getAllPlannedMeals(callBack);
+    }
+
+    public void getIngredients(IngredientNetworkCB callBack){
+        remoteDataSource.getIngredients(callBack);
     }
 }

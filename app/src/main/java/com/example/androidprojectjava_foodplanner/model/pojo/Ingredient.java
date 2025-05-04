@@ -2,11 +2,25 @@ package com.example.androidprojectjava_foodplanner.model.pojo;
 
 import android.graphics.Bitmap;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Ingredient implements Serializable {
+    @SerializedName("strIngredient")
     private String name;
     private String measurement;
+
+    private Bitmap imageBitmap;
+
+    public Bitmap getImageBitmap() {
+        return imageBitmap;
+    }
+
+    public void setImageBitmap(Bitmap imageBitmap) {
+        this.imageBitmap = imageBitmap;
+    }
+
     private Bitmap image;
     public Ingredient(String name, String measurement, Bitmap image) {
         this.name = name;

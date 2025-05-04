@@ -1,5 +1,7 @@
 package com.example.androidprojectjava_foodplanner.AppNavigationView.search.view;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.androidprojectjava_foodplanner.AppNavigationView.details.view.IngredientsAdapter;
+import com.example.androidprojectjava_foodplanner.AppNavigationView.details.view.MealDetailsActivity;
+import com.example.androidprojectjava_foodplanner.AppNavigationView.search.presenter.SearchPresenter;
 import com.example.androidprojectjava_foodplanner.R;
 import com.example.androidprojectjava_foodplanner.model.pojo.Category;
 import com.example.androidprojectjava_foodplanner.model.pojo.Ingredient;
@@ -33,6 +37,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     private List<String> countryList;
     private List<Meal> mealList;
     private SearchType type;
+    private SearchPresenter presenter;
 
     public SearchAdapter(SearchType type,Object searchItems){
         this.type = type;
@@ -53,6 +58,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         }
     }
 
+    public void setPresenter(SearchPresenter presenter) {
+        this.presenter = presenter;
+    }
 
     @NonNull
     @Override
@@ -64,17 +72,30 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull SearchAdapter.SearchViewHolder holder, int position) {
+        final int pos = position;
         switch (type){
             case INGREDIENTS:
                 Ingredient ingredient = ingredientList.get(position);
                 holder.textView.setText(ingredient.getName());
-                Glide.with(holder.itemView.getContext()).asBitmap().load(ingredient.getImage()).into(holder.imageView);
+                Glide.with(holder.itemView.getContext()).asBitmap().load(ingredient.getImageBitmap()).into(holder.imageView);
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.getMealsByIngredient(ingredientList.get(pos));
+                    }
+                });
                 break;
 
             case CATEGORIES:
                 Category category = categoryList.get(position);
                 holder.textView.setText(category.getName());
                 Glide.with(holder.itemView.getContext()).asBitmap().load(category.getImageUrl()).into(holder.imageView);
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.getMealsByCategory(categoryList.get(pos));
+                    }
+                });
                 break;
 
             case COUNTRIES:
@@ -85,12 +106,39 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             case MEALS:
                 Meal meal = mealList.get(position);
                 holder.textView.setText(meal.getName());
-                Glide.with(holder.itemView.getContext()).asBitmap().load(meal.getVideoUrl()).into(holder.imageView);
+                Glide.with(holder.itemView.getContext()).load(meal.getImageUrl()).into(holder.imageView);
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(holder.itemView.getContext(), MealDetailsActivity.class);
+                        intent.putExtra("senderID","HomeFragment");
+                        intent.putExtra("mealId",meal.getId());
+                        holder.itemView.getContext().startActivity(intent);
+                    }
+                });
                 break;
 
             default:
                 break;
         }
+    }
+
+    public void updateList(Object list,SearchType type){
+        if(type == SearchType.INGREDIENTS){
+            ingredientList = (List<Ingredient>) list;
+        }
+        else if(type == SearchType.CATEGORIES){
+            categoryList = (List<Category>) list;
+            }
+        else if(type == SearchType.COUNTRIES){
+            countryList = (List<String>) list;
+        }
+        else if(type == SearchType.MEALS){
+            Log.i("SearchAdapterUpdateList","Updating Meals");
+            mealList = (List<Meal>) list;
+        }
+        else{}
+        notifyDataSetChanged();
     }
 
     @Override

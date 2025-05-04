@@ -25,9 +25,11 @@ public interface MealNetworkService {
 
     @GET("categories.php")
     Call<CategoryNetworkWrapper>getCategories();
-
     @GET("list.php?a=list")
     Call<CountryNetworkWrapper>getCountries();
+
+    @GET("list.php?i=list")
+    Call<IngredientNetworkWrapper>getIngredients();
 
 
 }

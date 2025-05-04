@@ -67,7 +67,6 @@ public class CreateAccount extends AppCompatActivity implements CreateAccountCon
             case SUCCESS:
                 Intent intent = new Intent(CreateAccount.this, NavigationActivity.class);
                 intent.putExtra("guest",false);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
                 break;
