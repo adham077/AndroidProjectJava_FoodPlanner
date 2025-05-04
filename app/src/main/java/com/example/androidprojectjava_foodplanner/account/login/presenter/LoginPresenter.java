@@ -1,4 +1,6 @@
 package com.example.androidprojectjava_foodplanner.account.login.presenter;
+import android.util.Log;
+
 import com.example.androidprojectjava_foodplanner.account.login.view.LoginViewContract;
 import com.example.androidprojectjava_foodplanner.model.repository.OperationCB;
 import com.example.androidprojectjava_foodplanner.model.repository.UserRepository;
@@ -30,6 +32,7 @@ public class LoginPresenter {
         userRepository.login(email, password, new OperationCB() {
             @Override
             public void onSuccess() {
+                Log.i("SyncingMealImages","login success");
                 view.LoginStateActions(LoginState.SUCCESS);
                 userRepository.syncMealImages(view.getContext());
             }

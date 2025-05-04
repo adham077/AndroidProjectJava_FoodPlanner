@@ -8,7 +8,6 @@ public class Ingredient implements Serializable {
     private String name;
     private String measurement;
     private Bitmap image;
-
     public Ingredient(String name, String measurement, Bitmap image) {
         this.name = name;
         this.measurement = measurement;

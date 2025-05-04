@@ -243,7 +243,8 @@ public class MealLocalDataSource {
             @Override
             public void run() {
                 for(PlannedMeal meal : meals){
-                    plannedMealDao.insertPlannedMeal(meal);
+                    if(plannedMealDao.getPlannedMealByDate(meal.getDate())==null)
+                        plannedMealDao.insertPlannedMeal(meal);
                 }
                 if(operationState != null)operationState.onSuccess();
             }

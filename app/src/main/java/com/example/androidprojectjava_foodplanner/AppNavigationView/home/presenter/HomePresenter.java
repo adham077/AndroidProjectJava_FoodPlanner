@@ -44,7 +44,7 @@ public class HomePresenter {
         if (view == null || !view.isFragmentActive()) return;
 
         Log.i("Aragorn_21","Fetching Meals");
-        fragComm.showLoading();
+        //fragComm.showLoading();
         AtomicBoolean fetchedRandom = new AtomicBoolean(false);
         AtomicBoolean fetchedList = new AtomicBoolean(false);
         final List[] _meals = new List[1];
@@ -55,7 +55,7 @@ public class HomePresenter {
             public void run() {
                 if(fetchedRandom.get() && fetchedList.get()){
                     Log.i("Aragorn_21","Fetching Successfuls");
-                    fragComm.showHome();
+                    //fragComm.showHome();
                     view.showOnlineView(randomMeal[0],_meals[0]);
                 }
             }

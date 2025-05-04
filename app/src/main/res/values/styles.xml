@@ -49,4 +49,11 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="PistachioDatePickerTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/primary_pistachio</item>
+        <item name="colorOnPrimary">@color/surface_white</item>
+        <item name="colorSurface">@color/surface_white</item>
+        <item name="android:windowBackground">@color/background_cream</item>
+    </style>
+
 </resources>

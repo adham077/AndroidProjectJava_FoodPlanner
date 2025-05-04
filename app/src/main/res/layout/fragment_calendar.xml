@@ -12,76 +12,85 @@
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minDate="01/01/2023"
-        android:maxDate="12/31/2030"
+        android:minDate="1672531200000"
+        android:maxDate="1924905600000"
         android:firstDayOfWeek="2"
         android:theme="@style/PistachioCalendarTheme"/>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/calendarCard"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/surface_white"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="16dp">
 
             <TextView
                 android:id="@+id/selectedDateText"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:textColor="@color/secondary_brown"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:gravity="center"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/removeButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/selectedDateText"
-                android:visibility="gone"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Remove meal"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_delete_24"
-                app:tint="@color/primary_dark"
-                android:contentDescription="Remove meal"/>
+                app:tint="@color/primary_dark" />
 
             <ImageView
                 android:id="@+id/mealImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/selectedDateText"
-                android:layout_marginTop="8dp"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
                 android:contentDescription="Meal image"
                 android:scaleType="centerCrop"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/selectedDateText" />
 
             <TextView
                 android:id="@+id/mealName"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/mealImage"
-                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:textColor="@color/primary_dark"
                 android:textSize="16sp"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mealImage" />
 
             <TextView
                 android:id="@+id/emptyText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/selectedDateText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="No meal planned for this day"
                 android:textColor="@color/primary_light"
-                android:gravity="center"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/selectedDateText" />
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-
 </LinearLayout>

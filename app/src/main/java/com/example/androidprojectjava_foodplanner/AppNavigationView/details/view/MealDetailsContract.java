@@ -21,6 +21,10 @@ public interface MealDetailsContract {
     void highlightFav();
     void unhighlightFav();
     void showMealDetailsFromFav(List<Bitmap>mealImage, List<Bitmap>ingredientImages,Meal meal);
-
+    void showSavingPlannedSuccess();
+    void showSavingPlannedFailure();
+    void hideFavBtn();
+    void hideScheduleBtn();
+    void showPlannedMeal(Meal meal,Bitmap imageMeal,List<Bitmap> ingredientImages);
     Object provideContext();
 }

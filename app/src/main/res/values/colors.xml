@@ -28,4 +28,10 @@
     <!-- Additional Accents -->
     <color name="accent_beige">#E3D8C5</color>       <!-- Warm beige -->
     <color name="accent_brown">#795548</color>       <!-- Earthy brown -->
+
+    <color name="chip_background">@color/surface_white</color>
+    <color name="chip_background_selected">@color/primary_light</color>
+
+    <!-- Add chip background selector -->
+    <drawable name="chip_background_selector">@color/chip_background</drawable>
 </resources>

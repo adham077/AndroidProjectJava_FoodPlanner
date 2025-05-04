@@ -7,10 +7,12 @@ import android.util.Log;
 
 import com.example.androidprojectjava_foodplanner.AppNavigationView.details.view.MealDetailsContract;
 import com.example.androidprojectjava_foodplanner.local.database.FavouriteMealCB;
+import com.example.androidprojectjava_foodplanner.local.database.PlannedMealCB;
 import com.example.androidprojectjava_foodplanner.main.view.LoadActivityComm;
 import com.example.androidprojectjava_foodplanner.model.pojo.FavouriteMeal;
 import com.example.androidprojectjava_foodplanner.model.pojo.Ingredient;
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
+import com.example.androidprojectjava_foodplanner.model.pojo.PlannedMeal;
 import com.example.androidprojectjava_foodplanner.model.repository.MealRepository;
 import com.example.androidprojectjava_foodplanner.model.repository.OperationCB;
 import com.example.androidprojectjava_foodplanner.model.repository.UserRepository;
@@ -57,9 +59,27 @@ public class MealDetailsPresenter {
         return instance;
     }
 
+    public void init(){
+        if(!userRepository.isLoggedIn()){
+            view.hideScheduleBtn();
+            view.hideFavBtn();
+        }
+    }
 
 
     public void getMealDetails(int mealID, String senderID){
+
+        mealRepository.getFavouriteMealByMealIDLocal(mealID, new FavouriteMealCB() {
+            @Override
+            public void found(FavouriteMeal meal) {
+                if(meal != null){
+                    view.highlightFav();
+                }
+                else{
+                    view.unhighlightFav();
+                }
+            }
+        });
 
         //view.showLoading();
         if(senderID.equals("HomeFragment")) {
@@ -101,18 +121,6 @@ public class MealDetailsPresenter {
                 public void onFailure(String msg) {
                     //loadActivityComm.ret();
                     view.failedToFetch();
-                }
-            });
-
-            mealRepository.getFavouriteMealByMealIDLocal(mealID, new FavouriteMealCB() {
-                @Override
-                public void found(FavouriteMeal meal) {
-                    if(meal != null){
-                        view.highlightFav();
-                    }
-                    else{
-                        view.unhighlightFav();
-                    }
                 }
             });
         }
@@ -255,4 +263,114 @@ public class MealDetailsPresenter {
             }
         });
     }
+
+    public void onScheduleClicked(int mealID,int day,int month,int year){
+        final PlannedMeal[] plannedMeal = {null};
+        mealRepository.getMealByIdRemote(mealID, new MealNetworkCB() {
+            @Override
+            public void onSuccess(Meal meal) {
+                plannedMeal[0] = new PlannedMeal(meal,day,month,year);
+                savePlannedMeal(plannedMeal[0]);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                view.showSavingPlannedFailure();
+            }
+        });
+    }
+
+    private void savePlannedMeal(PlannedMeal plannedMeal){
+        userRepository.addPlannedMeal(plannedMeal, new OperationCB() {
+            @Override
+            public void onSuccess() {
+                view.showSavingPlannedSuccess();
+            }
+
+            @Override
+            public void onFailure(int errorID) {
+                view.showSavingPlannedFailure();
+            }
+        });
+    }
+
+    public void getMealDetailsByDate(String date){
+        mealRepository.getPlannedMealByDateLocal(date, new PlannedMealCB() {
+            @Override
+            public void found(PlannedMeal plannedMeal) {
+                if(plannedMeal == null)return;
+                Meal _meal = plannedMeal.getMeal();
+                List<String> formattedIngredients = new ArrayList<>();
+                for(int i=0;i<_meal.getIngredients().size();i++){
+                    formattedIngredients.add((_meal.getIngredients().get(i)));
+                }
+                List<Meal>_meals = new ArrayList<>();
+                _meals.add(_meal);
+
+                class GetImages implements Runnable{
+                    private List<Bitmap> image;
+                    private List<Bitmap> ingredientImages;
+                    private AtomicInteger counter;
+
+                    public GetImages(){
+                        counter = new AtomicInteger(0);
+                        image = new ArrayList<>();
+                        ingredientImages = new ArrayList<>();
+                    }
+
+                    public void mealImageDone(List<Bitmap> image){
+                        this.image = image;
+                        this.run();
+                    }
+
+                    public void ingredientImageDone(List<Bitmap> ingredientImages){
+                        this.ingredientImages = ingredientImages;
+                        this.run();
+                    }
+
+                    @Override
+                    public void run() {
+                        if(counter.incrementAndGet() == 2){
+                            view.showMealDetailsFromFav(image,ingredientImages,_meal);
+                        }
+                    }
+                }
+
+                GetImages getImages = new GetImages();
+
+
+                ingredientsRemoteDataSource.getIngredientImagesFromLocal(formattedIngredients, new IngredientsNetworkCB() {
+                    @Override
+                    public void onSuccess(List<Bitmap> imagesBitmap) {
+                        getImages.ingredientImageDone(imagesBitmap);
+                    }
+
+                    @Override
+                    public void onSuccess(Bitmap imageBitmap) {
+
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+
+                    }
+                });
+
+                userRepository.getMealSavedImages(_meals, view.provideContext(), new UserRepository.MealImagesCB() {
+                    @Override
+                    public void onSuccess(List<Bitmap> imagesBitmap) {
+                        getImages.mealImageDone(imagesBitmap);
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+
+                    }
+                });
+            }
+        });
+    }
+
+
+
 }

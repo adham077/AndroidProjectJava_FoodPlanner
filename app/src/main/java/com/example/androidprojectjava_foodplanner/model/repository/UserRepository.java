@@ -273,13 +273,16 @@ public class UserRepository{
     public void syncMealImages(Object context){
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user == null){
+            Log.i("SyncingMealImages","User is null");
             return;
         }
+        Log.i("SyncingMealImages","User is not null");
         firebaseDB.getUserDataById(user.getUid(), new GetUserCB() {
             @Override
             public void onSuccess(PlannerUser plannerUser) {
                 List<PlannedMeal> plannedMeals = plannerUser.getPlannedMeals();
                 List<FavouriteMeal> favouriteMeals = plannerUser.getFavouriteMeals();
+                Log.i("SyncingMealImages","Succcess");
 
                 List<Meal> _plannedMeals = new ArrayList<>();
                 List<Meal> _favouriteMeals = new ArrayList<>();
@@ -319,7 +322,7 @@ public class UserRepository{
             }
             @Override
             public void onFailure() {
-
+                Log.i("SyncingMealImages","failure");
             }
         });
     }
@@ -568,6 +571,7 @@ public class UserRepository{
             }
 
             String imageUrl = meal.getImageUrl();
+            Log.i("SyncingMealImages",imageUrl);
             if (imageUrl == null || imageUrl.isEmpty()) {
                 return;
             }

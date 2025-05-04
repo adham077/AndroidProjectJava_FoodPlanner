@@ -1,5 +1,7 @@
 package com.example.androidprojectjava_foodplanner.AppNavigationView.details.view;
 
+import static android.view.View.INVISIBLE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Parcel;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -54,35 +57,48 @@ import com.example.androidprojectjava_foodplanner.remote.meal.ingredients.Ingred
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseAuth.UserAuthentication;
 import com.example.androidprojectjava_foodplanner.remote.user.firebase.firebaseDB.UserRemoteDataSource;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MealDetailsActivity extends AppCompatActivity implements MealDetailsContract{
     private String sender;
     private LoadActivityComm loadActivity;
     private MealDetailsPresenter presenter;
     private FloatingActionButton floatingActionButton;
+    private FloatingActionButton scheduleButton;
 
     private List<Bitmap> ingredientImages;
     private List<Bitmap> mealImage;
 
     private Meal savedMeal;
+    private int _mealID;
+
+    private String mealDate;
 
     private Handler mainHandler;
+    private MaterialDatePicker dateCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("MealDetailsActivityLifeCycle","onCreate");
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_meal_details);
         Intent intent = getIntent();
         int mealID = intent.getIntExtra("mealId", 0);
+        _mealID = mealID;
         String senderID = intent.getStringExtra("senderID");
-        loadActivity = new LoadActivity();
+        //loadActivity = new LoadActivity();
         Log.i("MealDetailsActivitySenderId",senderID);
+
 
         MealRepository mealRepository = MealRepository.getInstance(
                 MealRemoteDataSource.getInstance(this),
@@ -102,14 +118,28 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
                 userRepository,
                 loadActivity,
                 ingredientsRemoteDataSource);
-        presenter.getMealDetails(mealID,senderID);
-
         floatingActionButton = findViewById(R.id.mealDetailsFavouriteBtn);
+        scheduleButton = findViewById(R.id.scheduleButton);
+
+        presenter.init();
+        if(!senderID.equals("CalendarFragment")){
+            presenter.getMealDetails(mealID,senderID);        }
+        else{
+            mealDate = intent.getStringExtra("mealDate");
+            presenter.getMealDetailsByDate(mealDate);
+        }
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onFavClicked(mealID);
+            }
+        });
+
+        scheduleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDial();
             }
         });
 
@@ -129,15 +159,17 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
                 }
 
             }
+
+
         };
 
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                Log.i("MealDetailsActivityBack","Back pressed");
-                finish();
-            }
-        });
+//        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                Log.i("MealDetailsActivityBack","Back pressed");
+//                finish();
+//            }
+//        });
     }
 
     @Override
@@ -152,6 +184,25 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         Message msg = Message.obtain();
         msg.what = 2;
         mainHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void showSavingPlannedSuccess() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MealDetailsActivity.this.getApplicationContext(), "Meal planned successfully", Toast.LENGTH_SHORT).show();
+            }
+        });    }
+
+    @Override
+    public void showSavingPlannedFailure() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MealDetailsActivity.this.getApplicationContext(), "Failed to save Meal", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void showMealDetailsFromFavMainThread(List<Bitmap>mealImage,List<Bitmap>ingredientImages){
@@ -350,8 +401,77 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         return videoId;
     }
 
+    void showDatePickerDial(){
+        long today = MaterialDatePicker.todayInUtcMilliseconds();
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        calendar.setTimeInMillis(today);
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        long oneWeekFromToday = calendar.getTimeInMillis();
+
+        CalendarConstraints.DateValidator dateValidator = new CalendarConstraints.DateValidator() {
+            @Override
+            public boolean isValid(long date) {
+                return date >= today && date <= oneWeekFromToday;
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(@NonNull Parcel dest, int flags) {
+
+            }
+        };
+
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setValidator(dateValidator)
+                .setStart(today)
+                .setEnd(oneWeekFromToday)
+                .build();
+
+
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Schedule Meal")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setCalendarConstraints(constraints)
+                .setTheme(R.style.PistachioDatePickerTheme)
+                .build();
+        datePicker.show(getSupportFragmentManager(),"DatePicker");
+
+        datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selection);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                int year = calendar.get(Calendar.YEAR);
+                presenter.onScheduleClicked(_mealID,day,month,year);
+            }
+        });
+
+    }
+
+    @Override
+    public void hideFavBtn(){
+        floatingActionButton.setVisibility(INVISIBLE);
+    }
+
+    @Override
+    public void hideScheduleBtn(){
+        scheduleButton.setVisibility(INVISIBLE);
+    }
+
     @Override
     public Object provideContext(){
         return this.getApplicationContext();
     }
+
+    @Override
+    public void showPlannedMeal(Meal meal,Bitmap imageMeal,List<Bitmap> ingredientImages){
+
+    }
+
 }

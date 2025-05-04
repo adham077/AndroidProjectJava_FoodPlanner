@@ -227,11 +227,7 @@ public class HomeFragment extends Fragment implements HomeContract{
 
     @Override
     public Object getAppContext() {
-        if (isAdded() && getActivity() != null) {
-            return getActivity().getApplicationContext();
-        } else {
-            return requireContext().getApplicationContext();
-        }
+        return this.getContext();
     }
 
     @Override

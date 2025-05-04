@@ -119,26 +119,6 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if (!isFinishing() && !isDestroyed()) {
-                clearFragmentStack();
-                showHome();
-            }
-        });
-    }
-
-    private void clearFragmentStack() {
-        if (fgMan.isStateSaved()) return;
-
-        if (fgMan.getBackStackEntryCount() > 0) {
-            fgMan.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-        fgMan.executePendingTransactions();
-    }
-
-    @Override
     public void showLoading() {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)

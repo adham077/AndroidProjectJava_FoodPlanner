@@ -1,15 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/searchFragmentId"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AppNavigationView.search.view.SearchFragment">
+    android:background="@color/background_cream">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="0dp">
+
+        <com.google.android.material.search.SearchBar
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search..."
+            app:backgroundColor="@color/surface_white"
+            app:strokeColor="@color/primary_light"
+            app:strokeWidth="1dp"
+            app:layout_scrollFlags="scroll|enterAlways"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:chipSpacing="8dp"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipIngredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingredients"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                app:chipStrokeColor="@color/primary_pistachio"
+                app:chipStrokeWidth="1dp"
+                app:checkedIcon="@null"
+                app:chipCornerRadius="8dp"
+                app:rippleColor="@color/primary_light"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipCategories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Categories"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                app:chipStrokeColor="@color/primary_pistachio"
+                app:chipStrokeWidth="1dp"
+                app:checkedIcon="@null"
+                app:chipCornerRadius="8dp"
+                app:rippleColor="@color/primary_light"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipCountries"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Countries"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                app:chipStrokeColor="@color/primary_pistachio"
+                app:chipStrokeWidth="1dp"
+                app:checkedIcon="@null"
+                app:chipCornerRadius="8dp"
+                app:rippleColor="@color/primary_light"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"/>
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
