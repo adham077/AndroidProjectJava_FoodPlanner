@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">AndroidProjectJava_FoodPlanner</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="log_in_key">Login</string>
@@ -47,4 +46,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="app_name">Mealstachio</string>
 </resources>

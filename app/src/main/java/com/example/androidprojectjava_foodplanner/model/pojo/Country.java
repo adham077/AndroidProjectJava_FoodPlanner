@@ -1,5 +1,7 @@
 package com.example.androidprojectjava_foodplanner.model.pojo;
 
+import android.graphics.Bitmap;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Country {
@@ -7,6 +9,36 @@ public class Country {
     private String name;
     private transient int id;
     private transient int imageId;
+
+    private transient Bitmap bitmap;
+
+    public Country() {
+    }
+
+    public Country(String name, int id, int imageId, Bitmap bitmap) {
+        this.name = name;
+        this.id = id;
+        this.imageId = imageId;
+        this.bitmap = bitmap;
+    }
+
+    public Country(String name,int imageId) {
+        this.name = name;
+        this.imageId = imageId;
+    }
+
+    public Country(String name, Bitmap bitmap) {
+        this.name = name;
+        this.bitmap = bitmap;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
 
     public int getId() {
         return id;

@@ -24,10 +24,7 @@ public class NavigationPresenter {
     }
 
     public static NavigationPresenter getInstance(UserRepository userRepository ,FragComm view) {
-        if (instance == null) {
-            instance = new NavigationPresenter(userRepository, view);
-        }
-        return instance;
+         return instance = new NavigationPresenter(userRepository, view);
     }
 
     public void changeState(NavigationState state){

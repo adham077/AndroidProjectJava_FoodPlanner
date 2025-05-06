@@ -18,6 +18,7 @@ import com.example.androidprojectjava_foodplanner.AppNavigationView.details.view
 import com.example.androidprojectjava_foodplanner.AppNavigationView.search.presenter.SearchPresenter;
 import com.example.androidprojectjava_foodplanner.R;
 import com.example.androidprojectjava_foodplanner.model.pojo.Category;
+import com.example.androidprojectjava_foodplanner.model.pojo.Country;
 import com.example.androidprojectjava_foodplanner.model.pojo.Ingredient;
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 
@@ -34,7 +35,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     private List<Category> categoryList;
     private List<Ingredient> ingredientList;
-    private List<String> countryList;
+    private List<Country> countryList;
     private List<Meal> mealList;
     private SearchType type;
     private SearchPresenter presenter;
@@ -48,7 +49,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             categoryList = (List<Category>) searchItems;
         }
         else if(type == SearchType.COUNTRIES){
-            countryList = (List<String>) searchItems;
+            countryList = (List<Country>) searchItems;
         }
         else if(type == SearchType.MEALS){
             mealList = (List<Meal>) searchItems;
@@ -99,8 +100,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                 break;
 
             case COUNTRIES:
-                String country = countryList.get(position);
-                holder.textView.setText(country);
+                Country country = countryList.get(position);
+                holder.textView.setText(country.getName());
+                holder.imageView.setImageResource(country.getImageId());
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.getMealsByCountry(country);
+                    }
+                });
                 break;
 
             case MEALS:
@@ -131,7 +139,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             categoryList = (List<Category>) list;
             }
         else if(type == SearchType.COUNTRIES){
-            countryList = (List<String>) list;
+            countryList = (List<Country>) list;
         }
         else if(type == SearchType.MEALS){
             Log.i("SearchAdapterUpdateList","Updating Meals");

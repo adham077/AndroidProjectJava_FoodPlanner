@@ -8,5 +8,6 @@ public interface CalendarContract {
     void showMealView(Meal meal, Bitmap imageBitmap);
     void showNoMealView();
     void setMealDate(int day,int month,int year);
+    void failedOp(String message);
     Object provideContext();
 }

@@ -9,6 +9,7 @@ import java.util.List;
 public interface HomeContract {
 
     void showOfflineView();
+    void showLoadingView();
     void showOnlineView(@NonNull Meal randomMeal,@NonNull List<Meal> meals);
 
     void failedtoFetch();

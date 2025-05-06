@@ -34,10 +34,7 @@ public class HomePresenter {
 
     public static HomePresenter getInstance(MealRepository mealRepository, HomeContract view,
                                              NetworkChange networkChange) {
-        if(instance == null){
-            instance = new HomePresenter(mealRepository,view,networkChange);
-        }
-        return instance;
+         return instance = new HomePresenter(mealRepository,view,networkChange);
     }
 
     private void fetchMeals(){

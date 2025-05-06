@@ -15,10 +15,7 @@ public class ProfilePresenter {
     }
 
     public static ProfilePresenter getInstance(ProfileContract view, UserRepository userRepository) {
-        if(instance == null){
-            instance = new ProfilePresenter(view,userRepository);
-        }
-        return instance;
+         return instance = new ProfilePresenter(view,userRepository);
     }
 
     public void logout(){

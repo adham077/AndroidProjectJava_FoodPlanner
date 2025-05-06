@@ -17,6 +17,7 @@ import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.androidprojectjava_foodplanner.AppNavigationView.calendar.presenter.CalendarPresenter;
@@ -88,7 +89,7 @@ public class CalendarFragment extends Fragment implements CalendarContract{
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                calendarPresenter.deletePlannedMeal(CalendarFragment.this.mealDay,CalendarFragment.this.mealMonth,CalendarFragment.this.mealYear);
             }
         });
 
@@ -144,6 +145,11 @@ public class CalendarFragment extends Fragment implements CalendarContract{
         this.mealMonth = month;
         this.mealYear = year;
         selectedDateText.setText(day + "/" + month + "/" + year);
+    }
+
+    @Override
+    public void failedOp(String message) {
+        Toast.makeText(this.getContext(),message,Toast.LENGTH_LONG).show();
     }
 
     @Override

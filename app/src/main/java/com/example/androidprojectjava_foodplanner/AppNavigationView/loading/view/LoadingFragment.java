@@ -27,7 +27,7 @@ public class LoadingFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        LottieAnimationView lottieAnimationView = view.findViewById(R.id.loadingAnim);
+        LottieAnimationView lottieAnimationView = view.findViewById(R.id.loadingAnimHome);
         lottieAnimationView.playAnimation();
     }
 }

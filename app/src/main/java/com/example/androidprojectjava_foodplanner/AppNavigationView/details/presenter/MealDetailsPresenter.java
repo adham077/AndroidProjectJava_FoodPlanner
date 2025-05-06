@@ -53,10 +53,8 @@ public class MealDetailsPresenter {
                                                    UserRepository userRepository,
                                                    LoadActivityComm loadActivity,
                                                    IngredientsRemoteDataSource ingredientsRemoteDataSource) {
-        if(instance == null){
-            instance = new MealDetailsPresenter(mealRepository, view, userRepository,loadActivity,ingredientsRemoteDataSource);
-        }
-        return instance;
+
+        return instance = new MealDetailsPresenter(mealRepository, view, userRepository,loadActivity,ingredientsRemoteDataSource);
     }
 
     public void init(){

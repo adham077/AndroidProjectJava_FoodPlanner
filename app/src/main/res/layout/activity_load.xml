@@ -8,7 +8,7 @@
     tools:context=".main.view.LoadActivity">
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/loadingAnim"
+        android:id="@+id/loadingAnimHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:lottie_autoPlay="true"

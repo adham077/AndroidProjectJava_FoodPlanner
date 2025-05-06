@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:paddingBottom="16dp">
 
-        <!-- Meal Image with Favorite Button -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="280dp"
@@ -52,7 +51,7 @@
 
         </RelativeLayout>
 
-        <!-- Meal Title -->
+
         <TextView
             android:id="@+id/mealTitleTextView"
             android:layout_width="match_parent"
@@ -67,7 +66,7 @@
             android:letterSpacing="0.02"
             tools:text="Delicious Pistachio Cake"/>
 
-        <!-- Ingredients Section -->
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -108,7 +107,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Instructions Section -->
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -134,7 +133,7 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Video Container at the Bottom -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mealDetailsVideoCard"
             android:layout_width="match_parent"

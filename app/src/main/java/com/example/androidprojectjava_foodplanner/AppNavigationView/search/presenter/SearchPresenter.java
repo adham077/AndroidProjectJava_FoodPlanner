@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.androidprojectjava_foodplanner.AppNavigationView.search.view.SearchContract;
 import com.example.androidprojectjava_foodplanner.model.pojo.Category;
+import com.example.androidprojectjava_foodplanner.model.pojo.Country;
 import com.example.androidprojectjava_foodplanner.model.pojo.Ingredient;
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 import com.example.androidprojectjava_foodplanner.model.repository.MealRepository;
@@ -31,10 +32,7 @@ public class SearchPresenter {
     }
 
     public static SearchPresenter getInstance(MealRepository mealRepository,IngredientsRemoteDataSource ingredientsRemoteDataSource,SearchContract view){
-        if(instance == null){
-            instance = new SearchPresenter(mealRepository,ingredientsRemoteDataSource,view);
-        }
-        return instance;
+         return instance = new SearchPresenter(mealRepository,ingredientsRemoteDataSource,view);
     }
 
     public void getAllIngredients(){
@@ -111,6 +109,20 @@ public class SearchPresenter {
 
     public void getMealsByIngredient(Ingredient ingredient){
         mealRepository.getMealsByIngredientRemote(ingredient.getName(), new MealListNetworkCB() {
+            @Override
+            public void onSuccess(List<Meal> meals) {
+                view.updateRecyclerWithMeals(meals);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+
+            }
+        });
+    }
+
+    public void getMealsByCountry(Country country){
+        mealRepository.getMealsByCountryRemote(country.getName(), new MealListNetworkCB() {
             @Override
             public void onSuccess(List<Meal> meals) {
                 view.updateRecyclerWithMeals(meals);

@@ -23,10 +23,7 @@ public class LoginPresenter {
     }
 
     public static LoginPresenter getInstance(LoginViewContract view,UserRepository userRepository){
-        if(instance == null){
-            instance = new LoginPresenter(view,userRepository);
-        }
-        return instance;
+         return instance = new LoginPresenter(view,userRepository);
     }
     public void onLogin(String email,String password){
         userRepository.login(email, password, new OperationCB() {
@@ -54,6 +51,21 @@ public class LoginPresenter {
                         view.LoginStateActions(LoginState.AUTHENTICATION_FAILED);
                         break;
                 }
+            }
+        });
+    }
+
+    public void onSignInWithGoogle(String tokenID){
+        userRepository.signInWithGoogle(tokenID, new OperationCB() {
+            @Override
+            public void onSuccess() {
+                view.LoginStateActions(LoginState.SUCCESS);
+                userRepository.syncMealImages(view.getContext());
+            }
+
+            @Override
+            public void onFailure(int errorID) {
+                view.LoginStateActions(LoginState.NETWORK_ERROR);
             }
         });
     }

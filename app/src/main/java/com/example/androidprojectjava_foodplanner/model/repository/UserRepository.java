@@ -619,4 +619,51 @@ public class UserRepository{
         }
         callBack.onSuccess(bitmaps);
     }
+
+    public void signInWithGoogle(String tokenID,OperationCB operationCB){
+
+        firebaseAuth.signInWithGoogleAccount(tokenID, new OnLoginCallBack() {
+            @Override
+            public void onSuccess(FirebaseUser user) {
+                mealLocalDataSource.deleteAllLocalMeals(new OperationState() {
+                    @Override
+                    public void onSuccess() {
+                        firebaseDB.getUserDataById(user.getUid(), new GetUserCB() {
+                            @Override
+                            public void onSuccess(PlannerUser plannerUser) {
+                                syncLocalToRemote(new SyncingCallBacks() {
+                                    @Override
+                                    public void taskCompleted(int status) {
+                                        operationCB.onSuccess();
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                syncRemoteToLocal(new SyncingCallBacks() {
+                                    @Override
+                                    public void taskCompleted(int status) {
+                                        operationCB.onSuccess();
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(int errorID) {
+                operationCB.onFailure(OperationCB.NETWORK_ERROR);
+            }
+        });
+    }
+
 }

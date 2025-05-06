@@ -85,6 +85,13 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
 
     private Handler mainHandler;
     private MaterialDatePicker dateCalendar;
+    private TextView instructionsView;
+    private TextView titleView;
+    private RecyclerView recyclerView;
+    private MaterialCardView videoCard;
+    private ImageView mealImageView;
+    private WebView webView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +99,20 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_meal_details);
+
+        instructionsView = findViewById(R.id.mealDetailsInstructionsTextView);
+        titleView = findViewById(R.id.mealTitleTextView);
+        recyclerView = findViewById(R.id.mealDetailsIngredientsRecycler);
+        videoCard = findViewById(R.id.mealDetailsVideoCard);
+        webView = findViewById(R.id.mealDetailsWebView);
+        mealImageView = findViewById(R.id.mealDetailsImageView);
+
+
         Intent intent = getIntent();
         int mealID = intent.getIntExtra("mealId", 0);
         _mealID = mealID;
         String senderID = intent.getStringExtra("senderID");
-        //loadActivity = new LoadActivity();
+
         Log.i("MealDetailsActivitySenderId",senderID);
 
 
@@ -159,18 +175,10 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
                 }
 
             }
-
-
         };
 
-//        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                Log.i("MealDetailsActivityBack","Back pressed");
-//                finish();
-//            }
-//        });
     }
+
 
     @Override
     public void showLoading() {
@@ -193,7 +201,8 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
             public void run() {
                 Toast.makeText(MealDetailsActivity.this.getApplicationContext(), "Meal planned successfully", Toast.LENGTH_SHORT).show();
             }
-        });    }
+        });
+    }
 
     @Override
     public void showSavingPlannedFailure() {
@@ -207,13 +216,13 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
 
     public void showMealDetailsFromFavMainThread(List<Bitmap>mealImage,List<Bitmap>ingredientImages){
         Meal meal = this.savedMeal;
-        Glide.with(this.getApplicationContext()).asBitmap().load(mealImage.get(0)).into((ImageView)findViewById(R.id.mealDetailsImageView));
-        ((TextView)findViewById(R.id.mealDetailsInstructionsTextView)).setText(meal.getInstructions());
-        ((TextView)findViewById(R.id.mealTitleTextView)).setText(meal.getName());
+        Glide.with(this.getApplicationContext()).asBitmap().load(mealImage.get(0)).into(mealImageView);
+        instructionsView.setText(meal.getInstructions());
+        titleView.setText(meal.getName());
 
-        WebView webView = findViewById(R.id.mealDetailsWebView);
-        MaterialCardView videoCard = findViewById(R.id.mealDetailsVideoCard);
+
         videoCard.setVisibility(View.VISIBLE);
+
 
         String youtubeUrl = meal.getVideoUrl();
         String videoId = extractYouTubeId(youtubeUrl);
@@ -226,9 +235,8 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         }
 
         IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(ingredientList);
-        RecyclerView recyclerView = findViewById(R.id.mealDetailsIngredientsRecycler);
         recyclerView.setAdapter(ingredientsAdapter);
-        Log.i("ShowingDetails","Success");
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 this.getApplicationContext(),
                 LinearLayoutManager.HORIZONTAL,
@@ -261,15 +269,11 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     }
 
     public void showMealDetailsMainThread(Meal meal,List<Ingredient> ingredientList){
-        Log.i("MealDetailsActivityShowView","showingMealDetails");
-        if(this.getApplicationContext() == null) Log.i("MealDetailsActivityShowView","Null");
-        else Log.i("MealDetailsActivityShowView","Not null");
-        Glide.with(this.getApplicationContext()).load(meal.getImageUrl()).into((ImageView) findViewById(R.id.mealDetailsImageView));
-        ((TextView)findViewById(R.id.mealDetailsInstructionsTextView)).setText(meal.getInstructions());
-        ((TextView)findViewById(R.id.mealTitleTextView)).setText(meal.getName());
+        Glide.with(this.getApplicationContext()).load(meal.getImageUrl()).into(mealImageView);
+        instructionsView.setText(meal.getInstructions());
+        titleView.setText(meal.getName());
 
-        WebView webView = findViewById(R.id.mealDetailsWebView);
-        MaterialCardView videoCard = findViewById(R.id.mealDetailsVideoCard);
+
         videoCard.setVisibility(View.VISIBLE);
 
         String youtubeUrl = meal.getVideoUrl();
@@ -472,6 +476,12 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     @Override
     public void showPlannedMeal(Meal meal,Bitmap imageMeal,List<Bitmap> ingredientImages){
 
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.i("MealDetailsActivityLifeCycle","onDestroy");
     }
 
 }

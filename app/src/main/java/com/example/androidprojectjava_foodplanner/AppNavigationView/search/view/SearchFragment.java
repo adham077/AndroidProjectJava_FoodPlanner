@@ -1,5 +1,6 @@
 package com.example.androidprojectjava_foodplanner.AppNavigationView.search.view;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,8 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.search.SearchView;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,6 +81,8 @@ public class SearchFragment extends Fragment implements SearchContract{
         IngredientsRemoteDataSource ingredientsRemoteDataSource = IngredientsRemoteDataSource.getInstance(this.getContext());
         searchPresenter = SearchPresenter.getInstance(mealRepository, ingredientsRemoteDataSource,this);
 
+        setupCountries();
+
         ChipGroup chipGroup = view.findViewById(R.id.chipGroupid);
         chipGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
             @Override
@@ -90,7 +95,7 @@ public class SearchFragment extends Fragment implements SearchContract{
                     Log.i("SearchFragmentChipSelected", "Selected Categories");
                     searchPresenter.getAllCategories();
                 } else if (selectedId == R.id.chipCountries) {
-                    searchPresenter.getAllCountries();
+                    updateRecyclerWithCountries(SearchFragment.this.countries);
                 }
                 else{
                     Log.i("SearchFragmentChipSelected", "Unknown chip selected: " + selectedId);
@@ -112,7 +117,7 @@ public class SearchFragment extends Fragment implements SearchContract{
                 } else if (chipCategories.isChecked()) {
                     filterCategories(categories, query);
                 } else if (chipCountries.isChecked()) {
-                    filterCountries(countries,query);
+                    filterCountries(SearchFragment.this.countries,query);
                 } else {
                     if(meals == null){
                         Log.i("SearchMeals" ,"NUll");
@@ -148,7 +153,7 @@ public class SearchFragment extends Fragment implements SearchContract{
         List<Country> filtered = sourceList.stream()
                 .filter(item -> item.getName().toLowerCase().contains(query.toLowerCase()))
                 .collect(Collectors.toList());
-        searchAdapter.updateList(filtered,SearchAdapter.SearchType.CATEGORIES);
+        searchAdapter.updateList(filtered,SearchAdapter.SearchType.COUNTRIES);
     }
 
     private void filterMeals(List<Meal> sourceList, String query){
@@ -200,7 +205,14 @@ public class SearchFragment extends Fragment implements SearchContract{
 
     @Override
     public void updateRecyclerWithCountries(List<Country> countries) {
-
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
+                getContext(),
+                LinearLayoutManager.VERTICAL,
+                false);
+        searchRecycler.setLayoutManager(linearLayoutManager);
+        searchAdapter = new SearchAdapter(SearchAdapter.SearchType.COUNTRIES,this.countries);
+        searchAdapter.setPresenter(this.searchPresenter);
+        searchRecycler.setAdapter(searchAdapter);
     }
 
     @Override
@@ -223,4 +235,39 @@ public class SearchFragment extends Fragment implements SearchContract{
             }
         });
     }
+
+    public void setupCountries(){
+        countries = Arrays.asList(
+            new Country("Egyptian",R.drawable.egypt_large),
+            new Country("American", R.drawable.america_large),
+            new Country("British",R.drawable.british_large),
+            new Country("Canadian",R.drawable.canada_large),
+            new Country("Chinese",R.drawable.china_large),
+            new Country("Croatian",R.drawable.croatia_large),
+            new Country("Dutch",R.drawable.netherlands_large),
+            new Country("Filipino",R.drawable.phillippines_large),
+            new Country("French",R.drawable.france_large),
+            new Country("Greek",R.drawable.greece_large),
+            new Country("Indian",R.drawable.india_large),
+            new Country("Irish",R.drawable.ireland_large),
+            new Country("Italian",R.drawable.italy_large),
+            new Country("Jamaican",R.drawable.jamaica_large),
+            new Country("Japanese",R.drawable.japan_large),
+            new Country("Kenyan",R.drawable.kenya_large),
+            new Country("Malaysian",R.drawable.malaysia_large),
+            new Country("Mexican",R.drawable.mexico_large),
+            new Country("Moroccan",R.drawable.morocco_large),
+            new Country("Polish",R.drawable.poland_large),
+            new Country("Portuguese",R.drawable.portugal_large),
+            new Country("Russian",R.drawable.russia_large),
+            new Country("Spanish",R.drawable.spain_large),
+            new Country("Thai",R.drawable.thailand_large),
+            new Country("Tunisian",R.drawable.tunisia_large),
+            new Country("Turkish",R.drawable.turkey_large),
+            new Country("Ukrainian",R.drawable.ukraine_flag),
+            new Country("Uruguayan",R.drawable.uruguay_large),
+            new Country("Vietnamese",R.drawable.vietnam_large)
+        );
+    }
+
 }

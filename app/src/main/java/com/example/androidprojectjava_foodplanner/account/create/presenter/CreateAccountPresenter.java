@@ -31,10 +31,7 @@ public class CreateAccountPresenter {
     }
 
     public static CreateAccountPresenter getInstance(UserRepository userRepository, CreateAccountContract view) {
-        if (instance == null) {
-            instance = new CreateAccountPresenter(userRepository, view);
-        }
-        return instance;
+         return instance = new CreateAccountPresenter(userRepository, view);
     }
 
     public void createAccount(String email, String password, String name){

@@ -83,58 +83,56 @@ public class IngredientsRemoteDataSource {
         });
     }
 
-    public void getIngredientsImages(List<String> ingredients, IngredientsNetworkCB callBack) {
+    public void getIngredientsImages(List<String> ingredients, IngredientsNetworkCB callBack){
+
         List<Bitmap> bitmaps = new ArrayList<>(Collections.nCopies(ingredients.size(), null));
         AtomicInteger counter = new AtomicInteger(0);
+
+        class CheckAndReturn implements Runnable{
+            List<Bitmap> bitmaps;
+            public CheckAndReturn(List<Bitmap> bitmaps){
+                this.bitmaps = bitmaps;
+            }
+
+            public void check(Bitmap bitmap,int index){
+                bitmaps.set(index,bitmap);
+                this.run();
+            }
+
+            @Override
+            public void run() {
+                if (counter.incrementAndGet() == ingredients.size()) {
+                    callBack.onSuccess(bitmaps);
+                }
+            }
+        }
+
+        CheckAndReturn checkAndReturn = new CheckAndReturn(bitmaps);
 
         for (int i = 0; i < ingredients.size(); i++) {
             final int index = i;
             String formattedName = formatIngredientName(ingredients.get(i));
-            Log.i("FormattedName",formattedName);
-            ingredientsService.getIngredientImage(formattedName).enqueue(new Callback<ResponseBody>() {
+            getIngredientImage(formattedName, new IngredientsNetworkCB() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    new Thread(() -> {
-                        Bitmap bitmap = null;
-                        if (response.body() != null) {
-                            InputStream inputStream = response.body().byteStream();
-                            bitmap = BitmapFactory.decodeStream(inputStream);
-                            Log.i("FetchingStatus","SUccess");
-                        }
-                        else{
-                            Log.i("FetchingStatus","failure");
-                        }
+                public void onSuccess(List<Bitmap> imagesBitmap) {
 
-                        bitmaps.set(index, bitmap);
-                        checkAndReturn();
-                    }).start();
+                }
+                @Override
+                public void onSuccess(Bitmap imageBitmap) {
+                    checkAndReturn.check(imageBitmap,index);
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    bitmaps.set(index, null);
-                    checkAndReturn();
-                }
-
-                private void checkAndReturn() {
-                    if (counter.incrementAndGet() == ingredients.size()) {
-                        boolean allFailed = true;
-                        for (Bitmap b : bitmaps) {
-                            if (b != null) {
-                                allFailed = false;
-                                break;
-                            }
-                        }
-                        if (allFailed) {
-                            callBack.onFailure("Failed to load all images");
-                        } else {
-                            callBack.onSuccess(bitmaps);
-                        }
-                    }
+                public void onFailure(String message) {
+                    checkAndReturn.check(null,index);
                 }
             });
         }
+
     }
+
+
+
 
     private static class SaveIngredientsToLocal implements Runnable{
         private List<Ingredient> ingredientList;

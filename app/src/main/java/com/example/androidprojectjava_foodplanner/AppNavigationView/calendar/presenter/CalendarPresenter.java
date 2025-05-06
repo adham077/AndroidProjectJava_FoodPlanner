@@ -7,6 +7,7 @@ import com.example.androidprojectjava_foodplanner.local.database.PlannedMealCB;
 import com.example.androidprojectjava_foodplanner.model.pojo.Meal;
 import com.example.androidprojectjava_foodplanner.model.pojo.PlannedMeal;
 import com.example.androidprojectjava_foodplanner.model.repository.MealRepository;
+import com.example.androidprojectjava_foodplanner.model.repository.OperationCB;
 import com.example.androidprojectjava_foodplanner.model.repository.UserRepository;
 import com.example.androidprojectjava_foodplanner.remote.meal.ingredients.IngredientsRemoteDataSource;
 
@@ -25,10 +26,7 @@ public class CalendarPresenter {
     }
 
     public static CalendarPresenter getInstance(UserRepository userRepository,MealRepository mealRepository,CalendarContract view){
-        if (instance == null){
-            instance = new CalendarPresenter(userRepository,mealRepository,view);
-        }
-        return instance;
+         return  instance = new CalendarPresenter(userRepository,mealRepository,view);
     }
 
     public void onDateChanged(int day,int month,int year){
@@ -64,5 +62,18 @@ public class CalendarPresenter {
         });
     }
 
+    public void deletePlannedMeal(int day,int month,int year){
+        userRepository.removePlannedMealByDate(day, month, year, new OperationCB() {
+            @Override
+            public void onSuccess() {
+                view.showNoMealView();
+            }
+
+            @Override
+            public void onFailure(int errorID) {
+                view.failedOp("Failed to delete Meal");
+            }
+        });
+    }
 
 }

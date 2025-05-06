@@ -1,39 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemCard"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_height="150dp"
+    android:layout_margin="8dp"
     app:cardBackgroundColor="@color/surface_white"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
     app:strokeColor="@color/primary_light"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:padding="8dp">
 
+        <!-- Image with overlay -->
         <ImageView
             android:id="@+id/itemImage"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:contentDescription="Item Image Description"
+            android:layout_height="120dp"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:background="@color/primary_light"
+            android:contentDescription="Item image"
             android:scaleType="centerCrop" />
 
+        <!-- Gradient Overlay -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@id/itemImage"
+            android:background="@drawable/gradient_overlay" />
+
+        <!-- Category Name -->
         <TextView
             android:id="@+id/itemText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_alignBottom="@id/itemImage"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="8dp"
             android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="2"
-            android:textColor="@color/secondary_brown"
-            android:textSize="14sp" />
+            android:maxLines="1"
+            android:shadowColor="@color/primary_dark"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:textColor="@color/surface_white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Category Name" />
 
-    </LinearLayout>
+        <!-- Info Badge -->
+
+        <!-- Favorite Button -->
+
+    </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

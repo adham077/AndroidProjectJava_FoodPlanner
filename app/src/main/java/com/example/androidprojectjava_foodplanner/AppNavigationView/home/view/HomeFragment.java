@@ -25,6 +25,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,6 +62,7 @@ public class HomeFragment extends Fragment implements HomeContract{
     private String randMealImageUrl;
     private String randMealTitle;
     private HomePresenter presenter;
+    private FrameLayout loadingView;
 
     private boolean newDate;
 
@@ -122,6 +124,7 @@ public class HomeFragment extends Fragment implements HomeContract{
         randomMealTitle = view.findViewById(R.id.mealTitleRandom);
         randomMealImage = view.findViewById(R.id.mealImageRandom);
         CardView randomMealCardView = view.findViewById(R.id.mealOfTheDayCard);
+        loadingView = view.findViewById(R.id.loadingViewHome);
 
         mealLocalDataSource = MealLocalDataSource.getInstance(this.getContext());
         mealRemoteDataSource = MealRemoteDataSource.getInstance(this.getContext());
@@ -151,6 +154,14 @@ public class HomeFragment extends Fragment implements HomeContract{
     public void showOfflineView() {
         onlineView.setVisibility(View.GONE);
         offlineView.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoadingView(){
+        onlineView.setVisibility(View.GONE);
+        offlineView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -158,6 +169,7 @@ public class HomeFragment extends Fragment implements HomeContract{
         if (isStateSaved()) return;
         Log.i("Aragorn_21","showingOnlineView");
         offlineView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 this.getContext(),
                 LinearLayoutManager.HORIZONTAL,
@@ -197,8 +209,8 @@ public class HomeFragment extends Fragment implements HomeContract{
             Glide.with(myView.getContext()).
                     load(randMealImageUrl)
                     .into(randomMealImage);
-            onlineView.setVisibility(View.VISIBLE);
         }
+        onlineView.setVisibility(View.VISIBLE);
     }
 
     @Override

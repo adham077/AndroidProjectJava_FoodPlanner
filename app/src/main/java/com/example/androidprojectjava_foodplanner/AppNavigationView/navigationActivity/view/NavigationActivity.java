@@ -40,22 +40,15 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.auth.User;
 
 public class NavigationActivity extends AppCompatActivity implements FragComm {
-
     private FragmentManager fgMan;
-
     private Fragment homeFragment;
-
     private Fragment loadingFragment;
     private Fragment profileFragment;
-
     private Fragment searchFragment;
     private Fragment calendarFragment;
     private Fragment favouritesFragment;
-
     private Fragment guestProfileFragment;
-
     private BottomNavigationView bottomNavigationView;
-
     private  NavigationPresenter presenter;
 
     @Override
@@ -115,15 +108,16 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
                 return true;
             }
         });
-
     }
+
+
 
     @Override
     public void showLoading() {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.NavViewFrameLayout, loadingFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -131,7 +125,7 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.NavViewFrameLayout, homeFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -139,7 +133,7 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.NavViewFrameLayout, profileFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -147,7 +141,7 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.NavViewFrameLayout, favouritesFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -155,7 +149,7 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.NavViewFrameLayout, guestProfileFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -163,7 +157,7 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.NavViewFrameLayout, calendarFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -171,7 +165,7 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.NavViewFrameLayout, searchFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -189,6 +183,6 @@ public class NavigationActivity extends AppCompatActivity implements FragComm {
         fgMan.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.NavViewFrameLayout, homeFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 }
