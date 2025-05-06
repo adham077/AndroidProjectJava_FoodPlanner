@@ -2,10 +2,14 @@ package com.example.androidprojectjava_foodplanner.main.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.androidprojectjava_foodplanner.AppNavigationView.navigationActivity.view.NavigationActivity;
 import com.example.androidprojectjava_foodplanner.R;
 import com.example.androidprojectjava_foodplanner.account.login.view.LoginActivity;
@@ -33,7 +37,20 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         );
 
         MainPresenter presenter = MainPresenter.getInstance(userRepository,this);
-        presenter.init();
+
+        LottieAnimationView animationView = findViewById(R.id.start_animation);
+        animationView.playAnimation();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                animationView.cancelAnimation();
+                animationView.setVisibility(View.GONE);
+                presenter.init();
+            }
+        }, 3000);
+
+
     }
 
     @Override

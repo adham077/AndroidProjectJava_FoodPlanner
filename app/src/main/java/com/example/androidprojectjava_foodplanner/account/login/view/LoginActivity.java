@@ -70,6 +70,9 @@ public class LoginActivity extends AppCompatActivity implements LoginViewContrac
         presenter = LoginPresenter.getInstance(this,userRepository);
 
 
+
+
+
         continueAsGuestHandler();
         loginHandler();
         createAccountHandler();
