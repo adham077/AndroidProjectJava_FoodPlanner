@@ -16,7 +16,7 @@
     <item
         android:id="@+id/favouriteNavBar"
         android:icon="@drawable/favourite_asset"
-        android:title="fabourite" />
+        android:title="favourite" />
     <item
         android:id="@+id/accountNavBar"
         android:icon="@drawable/account_asset"
