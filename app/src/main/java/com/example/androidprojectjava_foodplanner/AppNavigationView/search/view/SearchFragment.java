@@ -113,6 +113,7 @@ public class SearchFragment extends Fragment implements SearchContract{
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = s.toString();
                 if (chipIngredients.isChecked()) {
+                    if(ingredients == null) return;
                     filterIngredients(ingredients, query);
                 } else if (chipCategories.isChecked()) {
                     filterCategories(categories, query);
